@@ -11,8 +11,9 @@ public class Test1 {
         ClassPathXmlApplicationContext context =
                 new ClassPathXmlApplicationContext("applicationContext.xml");
         ProductionOrderService service = context.getBean("productionOrderServiceImpl", ProductionOrderService.class);
+        ProductService service1 = context.getBean("productServiceImpl", ProductService.class);
 
-        System.out.println(service.getOrderById(1));
+        System.out.println(service1.getProductMaterialRequirementsByProductId(6));
 
 
 

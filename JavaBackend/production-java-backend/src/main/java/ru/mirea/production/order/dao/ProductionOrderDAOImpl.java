@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.mirea.production.order.entity.ProductionOrder;
+import ru.mirea.production.order.entity.ProductionOrderItem;
 import java.util.List;
 
 @Repository
@@ -18,6 +19,7 @@ public class ProductionOrderDAOImpl implements ProductionOrderDAO{
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("from ProductionOrder", ProductionOrder.class)
                         .getResultList();
+
     }
 
     @Override
@@ -31,4 +33,5 @@ public class ProductionOrderDAOImpl implements ProductionOrderDAO{
         Session session = sessionFactory.getCurrentSession();
         return (ProductionOrder) session.merge(order);
     }
+
 }

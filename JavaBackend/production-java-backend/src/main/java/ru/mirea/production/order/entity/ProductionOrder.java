@@ -2,10 +2,11 @@ package ru.mirea.production.order.entity;
 import jakarta.persistence.*;
 import ru.mirea.production.order.entity.enums.PriorityEnum;
 import ru.mirea.production.order.entity.enums.StatusEnum;
-import ru.mirea.production.product.entity.Product;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -15,9 +16,6 @@ public class ProductionOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
 
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
@@ -36,46 +34,28 @@ public class ProductionOrder {
     @Column(name = "comment", length = 200)
     private String comment;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductionOrderItem> items = new ArrayList<>();
 
-    public ProductionOrder() {}
-
-    @Override
-    public String toString() {
-        return "ProductionOrder{" +
-                "id=" + id +
-                ", quantity=" + quantity +
-                ", dueDate=" + dueDate +
-                ", priority=" + priority +
-                ", status=" + status +
-                ", createdAt=" + createdAt +
-                ", comment='" + comment + '\'' +
-                ", productId=" + product.getId() +
-                '}';
+    public ProductionOrder() {
     }
 
-    public ProductionOrder(Integer quantity, LocalDate dueDate, PriorityEnum priority, String comment, Product product) {
-        this.quantity = quantity;
+    public ProductionOrder(LocalDate dueDate, String comment) {
         this.dueDate = dueDate;
-        this.priority = priority;
+        this.comment = comment;
+
+        this.priority = PriorityEnum.MEDIUM;
         this.status = StatusEnum.NEW;
         this.createdAt = LocalDateTime.now();
-        this.comment = comment;
-        this.product = product;
+    }
+
+    public void addItem(ProductionOrderItem item) {
+        items.add(item);
+        item.setOrder(this);
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
     public LocalDate getDueDate() {
@@ -106,6 +86,10 @@ public class ProductionOrder {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public String getComment() {
         return comment;
     }
@@ -114,11 +98,8 @@ public class ProductionOrder {
         this.comment = comment;
     }
 
-    public Product getProduct() {
-        return product;
+    public List<ProductionOrderItem> getItems() {
+        return items;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 }

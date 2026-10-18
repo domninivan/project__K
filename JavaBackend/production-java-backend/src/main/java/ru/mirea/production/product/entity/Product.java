@@ -16,7 +16,6 @@ public class Product {
     @Column(name = "description", length = 300)
     private String description;
 
-
     public Product(){}
 
     public Product(String title, String description) {

@@ -16,7 +16,7 @@
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+    <org.mapstruct.version>1.6.3</org.mapstruct.version>
     <spring.version>6.2.9</spring.version>
     <hibernate.version>5.6.15.Final</hibernate.version>
   </properties>
@@ -79,6 +79,12 @@
       <version>2.19.2</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.18.2</version>
+    </dependency>
+
     <!-- Servlet API предоставляет Tomcat -->
     <dependency>
       <groupId>jakarta.servlet</groupId>
@@ -95,6 +101,26 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- DTO -->
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+
+    <!-- DTO -> Entity -->
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>${org.mapstruct.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>8.0.1.Final</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -109,6 +135,13 @@
         <version>3.14.0</version>
         <configuration>
           <release>21</release>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${org.mapstruct.version}</version>
+              </path>
+            </annotationProcessorPaths>
         </configuration>
       </plugin>
 
@@ -120,6 +153,7 @@
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
+
 
     </plugins>
 
