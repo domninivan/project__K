@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/mvc
+           https://www.springframework.org/schema/mvc/spring-mvc.xsd
+           http://www.springframework.org/schema/beans
+           https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           https://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/tx
+           https://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- бины будут здесь -->
+    <context:component-scan
+            base-package="ru.mirea.production"/>
+
+    <mvc:annotation-driven/>
+
+    <context:property-placeholder location="classpath:database.properties"/>
+
+    <bean id="dataSource"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+
+        <property name="driverClass"
+                  value="${db.driver}"/>
+
+        <property name="jdbcUrl"
+                  value="${db.url}"/>
+
+        <property name="user"
+                  value="${db.username}"/>
+
+        <property name="password"
+                  value="${db.password}"/>
+
+    </bean>
+
+    <!-- Создание Hibernate SessionFactory -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+
+        <property name="dataSource"
+                  ref="dataSource"/>
+
+        <!-- Пакет, где находятся @Entity -->
+        <property name="packagesToScan"
+                  value="ru.mirea.production"/>
+
+        <property name="hibernateProperties">
+            <props>
+
+                <prop key="hibernate.dialect">
+                    org.hibernate.dialect.PostgreSQLDialect
+                </prop>
+
+                <prop key="hibernate.show_sql">
+                    true
+                </prop>
+
+                <prop key="hibernate.format_sql">
+                    true
+                </prop>
+
+                <prop key="hibernate.hbm2ddl.auto">
+                    validate
+                </prop>
+
+            </props>
+        </property>
+    </bean>
+
+    <!-- Управление Hibernate-транзакциями -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+
+        <property name="sessionFactory"
+                  ref="sessionFactory"/>
+
+    </bean>
+
+
+    <!-- Включает поддержку @Transactional -->
+    <tx:annotation-driven
+            transaction-manager="transactionManager"/>
+
+
+</beans>
