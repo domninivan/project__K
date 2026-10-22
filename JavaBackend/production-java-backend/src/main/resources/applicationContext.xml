@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans
-        xmlns:mvc="http://www.springframework.org/schema/mvc"
         xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/mvc
-           https://www.springframework.org/schema/mvc/spring-mvc.xsd
-           http://www.springframework.org/schema/beans
-           https://www.springframework.org/schema/beans/spring-beans.xsd
-           http://www.springframework.org/schema/context
-           https://www.springframework.org/schema/context/spring-context.xsd
-           http://www.springframework.org/schema/tx
-           https://www.springframework.org/schema/tx/spring-tx.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
 
-    <!-- бины будут здесь -->
-    <context:component-scan
-            base-package="ru.mirea.production"/>
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            https://www.springframework.org/schema/beans/spring-beans.xsd
 
-    <mvc:annotation-driven/>
+            http://www.springframework.org/schema/context
+            https://www.springframework.org/schema/context/spring-context.xsd"
+            >
 
-    <context:property-placeholder location="classpath:database.properties"/>
 
+    <!-- Чтение database.properties -->
+    <context:property-placeholder
+            location="classpath:database.properties"/>
+
+
+    <!-- Подключение к PostgreSQL -->
     <bean id="dataSource"
           class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
@@ -42,14 +38,14 @@
 
     </bean>
 
-    <!-- Создание Hibernate SessionFactory -->
+
+    <!-- Hibernate SessionFactory -->
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 
         <property name="dataSource"
                   ref="dataSource"/>
 
-        <!-- Пакет, где находятся @Entity -->
         <property name="packagesToScan"
                   value="ru.mirea.production"/>
 
@@ -74,9 +70,11 @@
 
             </props>
         </property>
+
     </bean>
 
-    <!-- Управление Hibernate-транзакциями -->
+
+    <!-- Hibernate TransactionManager -->
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 
@@ -84,11 +82,5 @@
                   ref="sessionFactory"/>
 
     </bean>
-
-
-    <!-- Включает поддержку @Transactional -->
-    <tx:annotation-driven
-            transaction-manager="transactionManager"/>
-
 
 </beans>

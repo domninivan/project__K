@@ -1,25 +1,19 @@
 services:
-  app:
-    image: mcr.microsoft.com/devcontainers/base:trixie
-    volumes:
-      - .:/workspaces/project__K:cached
-      - node_modules:/workspaces/project__K/node_modules
-    command: sleep infinity
-    depends_on:
-      - postgres
-
   postgres:
     image: postgres:17
-    restart: unless-stopped
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
+
     ports:
       - "5433:5432"
+
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./database/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/02-seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
 
 volumes:
   postgres-data:
-  node_modules:
