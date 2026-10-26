@@ -1,9 +1,10 @@
 services:
   app:
     image: mcr.microsoft.com/devcontainers/base:trixie
+    user: vscode
     volumes:
       - .:/workspaces/project__K:cached
-      - node_modules:/workspaces/project__K/node_modules
+      - node_modules:/workspaces/project__K/Frontend/node_modules
     command: sleep infinity
     depends_on:
       - postgres
