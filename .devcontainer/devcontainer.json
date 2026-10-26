@@ -81,5 +81,5 @@
   },
 
   "remoteUser": "vscode",
-  "postCreateCommand": "npm install -g @usebruno/cli && go version && java -version && mvn -version && gradle -version && bru --version && python3 --version && node --version"
+  "postCreateCommand": "npm install -g @usebruno/cli && go version && java -version && mvn -version && bru --version && python3 --version && node --version"
 }
