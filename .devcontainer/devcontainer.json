@@ -35,8 +35,6 @@
         "redhat.java",
         "ms-azuretools.vscode-docker",
         "bruno-api-client.bruno",
-        "mtxr.sqltools",
-        "mtxr.sqltools-driver-pg",
         "mhutchie.git-graph",
         "redhat.vscode-yaml",
         "ms-python.python",
@@ -49,19 +47,6 @@
         "pranaygp.vscode-css-peek"
       ],
       "settings": {
-        "sqltools.connections": [
-          {
-            "name": "PostgreSQL (Docker)",
-            "driver": "PostgreSQL",
-            "server": "postgres",
-            "port": 5432,
-            "database": "postgres",
-            "username": "postgres",
-            "askForPassword": true,
-            "connectionTimeout": 5000
-          }
-        ],
-
         "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
         "python.formatting.provider": "black",
 
@@ -88,5 +73,5 @@
 
   "remoteUser": "vscode",
 
-  "postCreateCommand": "git config --global --add safe.directory /workspaces/project__K && npm install -g @usebruno/cli && go version && java -version && mvn -version && bru --version && python3 --version && node --version"
+  "postCreateCommand": "git config --global --add safe.directory /workspaces/project__K && npm install -g @usebruno/cli && go version && java -version && mvn -version && bru --version && python3 --version && node --version && sudo apt-get update && sudo apt-get install -y postgresql-client"
 }
