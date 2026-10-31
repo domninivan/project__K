@@ -1,11 +1,23 @@
 services:
   app:
     image: mcr.microsoft.com/devcontainers/base:trixie
+    user: vscode
     command: sleep infinity
 
     volumes:
       - .:/workspaces/project__K:cached
-      - node_modules:/workspaces/project__K/node_modules
+
+      # Frontend dependencies
+      - node_modules:/workspaces/project__K/Frontend/node_modules
+
+      # Go caches
+      - go-modules:/go/pkg/mod
+      - go-build-cache:/home/vscode/.cache/go-build
+
+      # Maven cache
+      - maven-repository:/home/vscode/.m2/repository
+
+      # Maven build output Java
       - java_target:/workspaces/project__K/JavaBackend/production-java-backend/target
 
     environment:
@@ -30,10 +42,14 @@ services:
 
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
       - ./database/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - ./database/02-seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
 
 volumes:
   postgres-data:
   node_modules:
+  go-modules:
+  go-build-cache:
+  maven-repository:
   java_target:

@@ -1,0 +1,5 @@
+variables:
+  - name: goBaseUrl
+    value: http://localhost:8080
+  - name: javaBaseUrl
+    value: http://localhost:8081

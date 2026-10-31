@@ -1,20 +1,186 @@
-# OS
-.DS_Store
-Thumbs.db
 
-# IDE
+# ========================================
+# OS
+# ========================================
+.DS_Store
+.DS_Store?
+Thumbs.db
+Desktop.ini
+
+# ========================================
+# IDE / Editors
+# ========================================
 .idea/
 .vscode/
 *.iml
+*.swp
+*.swo
+*~
 
-# Env
+# ========================================
+# Environment / Secrets
+# ========================================
 .env
-.env.local
+.env.*
+!.env.example
+!.env.sample
+!.env.template
 
-# Логи
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ========================================
+# Logs
+# ========================================
 *.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
 
+# ========================================
+# Temporary files
+# ========================================
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+.cache/
+tmp/
+temp/
+
+# ========================================
+# Java / JVM
+# ========================================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Maven
+target/
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Kotlin
+.kotlin/
+
+# ========================================
 # Python
+# ========================================
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
 .venv/
-*.pyc
+venv/
+env/
+ENV/
+
+# Packaging / Build
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+pip-wheel-metadata/
+
+# Testing / Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.pytype/
+.ruff_cache/
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ========================================
+# Go
+# ========================================
+# Compiled binaries (use explicit names if binaries are committed)
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go workspace / vendor notes:
+# vendor/ is intentionally NOT ignored by default
+# go.work is intentionally NOT ignored by default
+
+# ========================================
+# JavaScript / TypeScript / Node.js
+# ========================================
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+.output/
+.svelte-kit/
+.angular/
+.turbo/
+.parcel-cache/
+.vite/
+
+# Coverage / Testing
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Package manager logs
+lerna-debug.log*
+
+# ========================================
+# Frontend frameworks / Tooling
+# ========================================
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# ========================================
+# Local databases
+# ========================================
+*.sqlite
+*.sqlite3
+*.db
+
+# ========================================
+# Terraform (if used)
+# ========================================
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# ========================================
+# Docker / Local overrides
+# ========================================
+docker-compose.override.yml
+
+# ========================================
+# Local configuration
+# ========================================
+*.local
+>>>>>>> origin/main
