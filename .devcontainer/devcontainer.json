@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "name": "K (Debian 13)",
   "dockerComposeFile": "../docker-compose.yml",
@@ -27,8 +26,6 @@
     }
   },
 
-  "forwardPorts": [8080],
-
   "customizations": {
     "vscode": {
       "extensions": [
@@ -64,18 +61,24 @@
             "connectionTimeout": 5000
           }
         ],
+
         "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
         "python.formatting.provider": "black",
+
         "editor.formatOnSave": true,
+
         "[javascript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
+
         "[css]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
+
         "[html]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
+
         "[yaml]": {
           "editor.defaultFormatter": "redhat.vscode-yaml"
         }
@@ -84,91 +87,6 @@
   },
 
   "remoteUser": "vscode",
-  "postCreateCommand": "npm install -g @usebruno/cli && go version && java -version && mvn -version && gradle -version && bru --version && python3 --version && node --version"
-=======
-{
-  "name": "K (Debian 13)",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "app",
-  "workspaceFolder": "/workspaces/project__K",
 
-  "features": {
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "latest",
-      "golangciLintVersion": "latest"
-    },
-    "ghcr.io/devcontainers/features/java:1": {
-      "version": "latest",
-      "installMaven": true,
-      "installGradle": false
-    },
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    },
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.12"
-    },
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-      "version": "latest",
-      "moby": false
-    }
-  },
-
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "golang.go",
-        "vscjava.vscode-java-pack",
-        "vmware.vscode-spring-boot",
-        "redhat.java",
-        "ms-azuretools.vscode-docker",
-        "bruno-api-client.bruno",
-        "mtxr.sqltools",
-        "mtxr.sqltools-driver-pg",
-        "mhutchie.git-graph",
-        "redhat.vscode-yaml",
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-python.black-formatter",
-        "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
-        "ritwickdey.liveserver",
-        "formulahendry.auto-rename-tag",
-        "pranaygp.vscode-css-peek"
-      ],
-      "settings": {
-        "sqltools.connections": [
-          {
-            "name": "PostgreSQL (Docker)",
-            "driver": "PostgreSQL",
-            "server": "postgres",
-            "port": 5432,
-            "database": "postgres",
-            "username": "postgres",
-            "askForPassword": true,
-            "connectionTimeout": 5000
-          }
-        ],
-        "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
-        "python.formatting.provider": "black",
-        "editor.formatOnSave": true,
-        "[javascript]": {
-          "editor.defaultFormatter": "esbenp.prettier-vscode"
-        },
-        "[css]": {
-          "editor.defaultFormatter": "esbenp.prettier-vscode"
-        },
-        "[html]": {
-          "editor.defaultFormatter": "esbenp.prettier-vscode"
-        },
-        "[yaml]": {
-          "editor.defaultFormatter": "redhat.vscode-yaml"
-        }
-      }
-    }
-  },
-
-  "remoteUser": "vscode",
-  "postCreateCommand": "npm install -g @usebruno/cli && go version && java -version && mvn -version && bru --version && python3 --version && node --version"
->>>>>>> origin/main
+  "postCreateCommand": "git config --global --add safe.directory /workspaces/project__K && npm install -g @usebruno/cli && go version && java -version && mvn -version && bru --version && python3 --version && node --version"
 }
