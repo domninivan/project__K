@@ -10,9 +10,9 @@
       "golangciLintVersion": "latest"
     },
     "ghcr.io/devcontainers/features/java:1": {
-      "version": "latest",
+      "version": "21",
       "installMaven": true,
-      "installGradle": true
+      "installGradle": false
     },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "lts"
@@ -25,6 +25,8 @@
       "moby": false
     }
   },
+
+  "forwardPorts": [8080],
 
   "customizations": {
     "vscode": {

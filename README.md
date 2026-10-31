@@ -2,138 +2,173 @@
 
 Учебный проект по кейсу №22 «План производства по заказам (мастер-план)».
 
-На текущем этапе Java-backend отвечает за:
-- справочник деталей;
-- технологические операции деталей;
-- нормативы материалов;
-- производственные заказы и позиции заказов;
-- REST API для frontend;
-- дальнейшую оркестрацию Go-сервиса и 1С.
+## Архитектура
+
+```text
+React
+   |
+   v
+Java Spring Boot
+  /            \
+ v              v
+Go              1С
+```
+
+- React взаимодействует только с Java.
+- Java — центральный API и оркестратор бизнес-процесса заказа.
+- Go отвечает за производственное планирование.
+- 1С отвечает за материалы, склад, закупки и себестоимость.
+- Go и 1С напрямую друг с другом не взаимодействуют.
+
+---
+
+# Основной способ запуска — Dev Container
+
+Dev Container используется как единая среда разработки для команды.
+
+Внутри `app` доступны Java, Go, Node.js, Python и инструменты разработки.
+PostgreSQL запускается отдельным сервисом Docker Compose.
 
 ## Что нужно установить
 
-Для запуска Java-части нужны:
+На компьютере достаточно:
 
 - Git
-- JDK 21
-- Docker Desktop или Podman с поддержкой Docker Compose
+- Docker Desktop или Podman
+- Visual Studio Code
+- расширение **Dev Containers**
 
-Отдельно устанавливать Maven и Tomcat не нужно.
-
-Maven запускается через Maven Wrapper, а Spring Boot использует встроенный Tomcat.
-
----
-
-## Структура запуска
-
-Java запускается локально через Spring Boot.
-
-PostgreSQL запускается в Docker.
-
-```text
-Java / Spring Boot
-        |
-        v
-127.0.0.1:5433
-        |
-        v
-PostgreSQL container
-```
-
-Dev Container для обычного запуска Java-backend не требуется.
+Отдельно устанавливать Java, Maven, Tomcat, Go, Node.js и Python для работы через Dev Container не требуется.
 
 ---
 
-## 1. Клонировать проект
+## 1. Получить проект
+
+Если проект ещё не скачан:
 
 ```bash
 git clone <URL_РЕПОЗИТОРИЯ>
 cd project__K
 ```
 
----
-
-## 2. Запустить PostgreSQL
-
-Из корня `project__K`:
+Если проект уже есть:
 
 ```bash
-docker compose up -d postgres
+git pull
 ```
-
-Проверить, что контейнер запущен:
-
-```bash
-docker ps
-```
-
-PostgreSQL должен быть доступен на:
-
-```text
-host: 127.0.0.1
-port: 5433
-database: postgres
-user: postgres
-password: postgres
-```
-
-При первом создании контейнера автоматически выполняются:
-
-```text
-database/01-schema.sql
-database/02-seed.sql
-```
-
-`01-schema.sql` создаёт таблицы.
-
-`02-seed.sql` добавляет тестовые данные.
 
 ---
 
-## 3. Запустить Java-backend
+## 2. Открыть Dev Container
 
-Перейти в Maven-проект:
+Открыть в VS Code именно корень:
+
+```text
+project__K
+```
+
+Затем:
+
+```text
+Ctrl + Shift + P
+→ Dev Containers: Rebuild and Reopen in Container
+```
+
+VS Code использует:
+
+```text
+.devcontainer/devcontainer.json
+docker-compose.yml
+```
+
+---
+
+## 3. Что запускается
+
+```text
+app
+└── среда разработки
+    ├── Java
+    ├── Go
+    ├── Node.js
+    ├── Python
+    └── /workspaces/project__K
+
+postgres
+└── PostgreSQL 17
+```
+
+Java внутри Dev Container подключается к PostgreSQL через:
+
+```text
+postgres:5432
+```
+
+Переменные окружения задаются в `docker-compose.yml`:
+
+```text
+DB_URL=jdbc:postgresql://postgres:5432/postgres
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+```
+
+---
+
+## 4. Проверить окружение
+
+В терминале Dev Container:
+
+```bash
+java -version
+```
+
+Для Java-backend используется Java 21.
+
+Проверить подключение к БД:
+
+```bash
+echo $DB_URL
+```
+
+Ожидается:
+
+```text
+jdbc:postgresql://postgres:5432/postgres
+```
+
+Проверить сервисы:
+
+```bash
+docker compose ps
+```
+
+---
+
+## 5. Запустить Java-backend
 
 ```bash
 cd JavaBackend/production-java-backend
-```
-
-### Windows PowerShell
-
-```powershell
-.\mvnw.cmd spring-boot:run
-```
-
-### Windows cmd
-
-```bat
-mvnw.cmd spring-boot:run
-```
-
-### Linux / macOS
-
-```bash
 ./mvnw spring-boot:run
 ```
 
-После успешного запуска в консоли должно появиться сообщение примерно:
+После успешного запуска:
 
 ```text
 Tomcat started on port 8080
 Started ProductionApplication
 ```
 
-Backend будет доступен по адресу:
+Backend:
 
 ```text
 http://localhost:8080
 ```
 
+Отдельный Tomcat не нужен — Spring Boot использует встроенный.
+
 ---
 
-## 4. Проверить, что сервер работает
-
-Открыть:
+## 6. Проверить API
 
 ```text
 GET http://localhost:8080/api/orders/hello
@@ -145,24 +180,26 @@ GET http://localhost:8080/api/orders/hello
 Hello from Case 22
 ```
 
----
-
-## 5. Получить список заказов
+Список заказов:
 
 ```text
 GET http://localhost:8080/api/orders
 ```
 
+Заказ по ID:
+
+```text
+GET http://localhost:8080/api/orders/{orderId}
+```
+
 ---
 
-## 6. Создать тестовый заказ
+## 7. Создать тестовый заказ
 
 ```text
 POST http://localhost:8080/api/orders
 Content-Type: application/json
 ```
-
-Пример JSON:
 
 ```json
 {
@@ -183,27 +220,95 @@ Content-Type: application/json
 
 ---
 
-## Если база пустая и SQL-скрипты не выполнились
+# PostgreSQL
 
-Init-скрипты PostgreSQL выполняются только при создании нового volume.
+Внутри Docker-сети:
 
-Если контейнер уже запускался раньше, а SQL-скрипты были добавлены позже, нужно удалить старый volume:
-
-```bash
-docker compose down -v
+```text
+host: postgres
+port: 5432
+database: postgres
+user: postgres
+password: postgres
 ```
 
-После этого снова создать PostgreSQL:
+С компьютера:
 
-```bash
-docker compose up -d postgres
+```text
+host: 127.0.0.1
+port: 5433
+database: postgres
+user: postgres
+password: postgres
 ```
-
-> Внимание: `docker compose down -v` удаляет данные текущей локальной БД.
 
 ---
 
-## Полезные команды Docker
+## Инициализация БД
+
+При первом создании PostgreSQL volume автоматически выполняются:
+
+```text
+database/01-schema.sql
+database/02-seed.sql
+```
+
+`01-schema.sql` создаёт:
+
+```text
+product
+product_operation
+product_material_requirement
+production_order
+production_order_item
+```
+
+`02-seed.sql` добавляет тестовые данные.
+
+Если скрипты были изменены после первого запуска:
+
+```bash
+docker compose down -v
+docker compose up -d postgres
+```
+
+> `docker compose down -v` удаляет локальные данные PostgreSQL.
+
+---
+
+## Проверка БД
+
+Список таблиц:
+
+```bash
+docker compose exec postgres psql -U postgres -d postgres -c "\dt"
+```
+
+Детали:
+
+```bash
+docker compose exec postgres psql -U postgres -d postgres -c "SELECT * FROM product;"
+```
+
+Заказы:
+
+```bash
+docker compose exec postgres psql -U postgres -d postgres -c "SELECT * FROM production_order;"
+```
+
+---
+
+# Локальный запуск Java без Dev Container
+
+Также можно запускать Java непосредственно на компьютере.
+
+Нужны:
+
+- JDK 21
+- Git
+- Docker Desktop / Podman
+
+Maven отдельно не нужен: используется Maven Wrapper.
 
 Запустить PostgreSQL:
 
@@ -211,60 +316,88 @@ docker compose up -d postgres
 docker compose up -d postgres
 ```
 
-Остановить:
-
-```bash
-docker compose stop postgres
-```
-
-Посмотреть логи:
-
-```bash
-docker compose logs postgres
-```
-
-Проверить таблицы:
-
-```bash
-docker compose exec postgres psql -U postgres -d postgres -c "\dt"
-```
-
-Проверить тестовые детали:
-
-```bash
-docker compose exec postgres psql -U postgres -d postgres -c "SELECT * FROM product;"
-```
-
-Полностью пересоздать БД:
-
-```bash
-docker compose down -v
-docker compose up -d postgres
-```
-
----
-
-## Сборка Java без запуска
+Перейти в Java-проект:
 
 ### Windows
 
 ```powershell
-.\mvnw.cmd clean package
+cd JavaBackend\production-java-backend
 ```
 
 ### Linux / macOS
 
 ```bash
+cd JavaBackend/production-java-backend
+```
+
+Запустить:
+
+### Windows PowerShell
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+### Windows cmd
+
+```bat
+mvnw.cmd spring-boot:run
+```
+
+### Linux / macOS
+
+```bash
+./mvnw spring-boot:run
+```
+
+---
+
+# Конфигурация подключения к БД
+
+`database.properties`:
+
+```properties
+db.driver=org.postgresql.Driver
+db.url=${DB_URL:jdbc:postgresql://127.0.0.1:5433/postgres}
+db.username=${DB_USERNAME:postgres}
+db.password=${DB_PASSWORD:postgres}
+```
+
+Локально:
+
+```text
+127.0.0.1:5433
+```
+
+В Dev Container:
+
+```text
+postgres:5432
+```
+
+---
+
+# Сборка Java
+
+Dev Container / Linux:
+
+```bash
 ./mvnw clean package
 ```
 
-JAR появится в:
+Windows:
+
+```powershell
+.\mvnw.cmd clean package
+```
+
+JAR:
 
 ```text
 JavaBackend/production-java-backend/target/
 ```
 
-Запустить собранный JAR можно так:
+Запуск:
 
 ```bash
 java -jar target/production-java-backend.jar
@@ -272,9 +405,25 @@ java -jar target/production-java-backend.jar
 
 ---
 
-## Используемые технологии
+# Полезные команды Docker
 
-Java backend:
+```bash
+docker compose ps
+docker compose logs postgres
+docker compose restart postgres
+docker compose stop postgres
+docker compose down
+```
+
+Полностью удалить локальную БД:
+
+```bash
+docker compose down -v
+```
+
+---
+
+# Технологии Java-backend
 
 - Java 21
 - Spring Boot 3.5
@@ -282,89 +431,63 @@ Java backend:
 - Hibernate 5.6
 - native `SessionFactory`
 - Spring Transactions
-- PostgreSQL
+- PostgreSQL 17
 - c3p0
 - MapStruct
+- Bean Validation
 - Maven Wrapper
 
-База данных:
+Spring Boot отвечает за запуск приложения и web-слой.
 
-- PostgreSQL 17
-- Docker Compose
-- автоматическая инициализация через SQL
+Persistence-слой остаётся на DAO + Hibernate `SessionFactory`.
 
 ---
 
-## Текущая архитектура
+# Структура репозитория
 
 ```text
-React
-   |
-   v
-Java Spring Boot
-  /            \
- v              v
-Go              1С
+project__K/
+├── .devcontainer/
+│   ├── devcontainer.json
+│   └── devcontainer-lock.json
+│
+├── database/
+│   ├── 01-schema.sql
+│   └── 02-seed.sql
+│
+├── JavaBackend/
+│   └── production-java-backend/
+│       ├── pom.xml
+│       ├── mvnw
+│       ├── mvnw.cmd
+│       ├── .mvn/
+│       └── src/
+│
+├── GoBackend/
+├── Frontend/
+├── docker-compose.yml
+└── README.md
 ```
-
-Правила взаимодействия:
-
-- React общается только с Java.
-- Java является центральным API и оркестратором.
-- Go отвечает за производственное планирование.
-- 1С отвечает за материалы, склад, закупки и себестоимость.
-- Go и 1С напрямую друг с другом не взаимодействуют.
 
 ---
 
-## Если проект не запускается
-
-Сначала проверить PostgreSQL:
-
-```bash
-docker ps
-```
-
-Если контейнер не запущен:
-
-```bash
-docker compose up -d postgres
-```
-
-Потом проверить, что порт `5433` опубликован.
-
-Java ожидает БД по адресу:
+# Быстрый старт для участника команды
 
 ```text
-jdbc:postgresql://127.0.0.1:5433/postgres
+1. git pull / git clone
+2. открыть project__K в VS Code
+3. Ctrl+Shift+P
+4. Dev Containers: Rebuild and Reopen in Container
+5. открыть терминал
+6. cd JavaBackend/production-java-backend
+7. ./mvnw spring-boot:run
+8. открыть http://localhost:8080/api/orders/hello
 ```
 
-Если в логе есть:
+Если сервер вернул:
 
 ```text
-Connection refused
+Hello from Case 22
 ```
 
-то Java работает, но PostgreSQL недоступен.
-
----
-
-## Быстрый запуск
-
-### Windows
-
-```powershell
-git clone <URL_РЕПОЗИТОРИЯ>
-cd project__K
-
-docker compose up -d postgres
-
-cd JavaBackend\production-java-backend
-.\mvnw.cmd spring-boot:run
-```
-
-После этого проверить:
-
-```text
-http://localhost:8080/api/orders/hello
-```
+среда готова к работе.
