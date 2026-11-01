@@ -44,7 +44,10 @@
         "dbaeumer.vscode-eslint",
         "ritwickdey.liveserver",
         "formulahendry.auto-rename-tag",
-        "pranaygp.vscode-css-peek"
+        "pranaygp.vscode-css-peek",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        "tamasfe.even-better-toml"
       ],
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
@@ -73,5 +76,5 @@
 
   "remoteUser": "vscode",
 
-  "postCreateCommand": "git config --global --add safe.directory /workspaces/project__K && npm install -g @usebruno/cli && go version && java -version && mvn -version && bru --version && python3 --version && node --version && sudo apt-get update && sudo apt-get install -y postgresql-client"
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
 }
