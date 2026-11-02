@@ -29,12 +29,12 @@ sudo chown -R vscode:vscode /go/pkg/sumdb
 # 4. Make scripts executable
 # ----------------------------------------
 
-if [ -d "$PROJECT/Scripts" ]; then
-    find "$PROJECT/Scripts" \
-        -type f \
-        -name "*.sh" \
-        -exec chmod +x {} +
-fi
+# if [ -d "$PROJECT/Scripts" ]; then
+#     find "$PROJECT/Scripts" \
+#         -type f \
+#         -name "*.sh" \
+#         -exec chmod +x {} +
+# fi
 
 
 if [[ ! -f "$GO_BACKEND/.env" ]]; then
