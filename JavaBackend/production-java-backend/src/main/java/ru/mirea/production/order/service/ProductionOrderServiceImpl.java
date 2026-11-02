@@ -11,7 +11,8 @@ import ru.mirea.production.order.entity.enums.StatusEnum;
 import ru.mirea.production.order.exception.OrderNotFoundException;
 import ru.mirea.production.product.entity.Product;
 import ru.mirea.production.product.service.ProductService;
-import java.util.List;
+
+import java.util.*;
 
 @Service
 public class ProductionOrderServiceImpl implements ProductionOrderService{
@@ -28,9 +29,14 @@ public class ProductionOrderServiceImpl implements ProductionOrderService{
         ProductionOrder order =
                 new ProductionOrder(orderDTO.dueDate(), orderDTO.comment());
 
+        Map<Integer, Integer> productQuantities = new LinkedHashMap<>();
         for(var item: orderDTO.items()){
-            Product product = productService.getProduct(item.productId());
-            order.addItem(new ProductionOrderItem(item.quantity(), product));
+            productQuantities.merge(item.productId(), item.quantity(), Integer::sum);
+        }
+
+        for(var entry: productQuantities.entrySet()){
+            Product product = productService.getProduct(entry.getKey());
+            order.addItem(new ProductionOrderItem(entry.getValue(), product));
         }
 
         return productionOrderDAO.saveOrder(order);
@@ -58,14 +64,13 @@ public class ProductionOrderServiceImpl implements ProductionOrderService{
     @Transactional
     public ProductionOrder cancelOrder(int id) {
         ProductionOrder productionOrder = getOrderById(id);
+
+        if (productionOrder.getStatus() == StatusEnum.CANCELLED) {
+            return productionOrder;
+        }
+
         productionOrder.setStatus(StatusEnum.CANCELLED);
         return productionOrderDAO.saveOrder(productionOrder);
     }
 
-    @Transactional
-    @Override
-    public List<ProductionOrderItem> getOrderItemsByOrderId(int order_id) {
-        ProductionOrder productionOrder = getOrderById(order_id);
-        return productionOrder.getItems();
-    }
 }
