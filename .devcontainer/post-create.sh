@@ -7,6 +7,8 @@ PROJECT="/workspaces/project__K"
 JAVA_PROJECT="$PROJECT/JavaBackend/production-java-backend"
 GO_BACKEND="$PROJECT/GoBackend"
 
+git config --global --add safe.directory "$PROJECT"
+
 echo "========================================"
 echo "Preparing development environment..."
 echo "========================================"
