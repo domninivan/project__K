@@ -1,15 +1,3 @@
-<<<<<<< HEAD:Bruno__K/opencollection.yml
-opencollection: 1.0.0
-
-info:
-  name: Bruno__K
-bundled: false
-extensions:
-  bruno:
-    ignore:
-      - node_modules
-      - .git
-=======
 opencollection: 1.0.0
 
 info:
@@ -20,4 +8,3 @@ extensions:
     ignore:
       - node_modules
       - .git
->>>>>>> origin/main:Bruno__K/Bruno-K-Integration/opencollection.yml

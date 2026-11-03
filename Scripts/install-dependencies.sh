@@ -53,7 +53,7 @@ if [[ -f "$JAVA_DIR/pom.xml" ]]; then
         cd "$JAVA_DIR"
 
         if [[ -f ./mvnw ]]; then
-            sh ./mvnw -B dependency:go-offline
+            bash ./mvnw -B dependency:go-offline
         elif command -v mvn >/dev/null 2>&1; then
             mvn -B dependency:go-offline
         else

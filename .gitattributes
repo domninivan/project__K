@@ -1,5 +1,17 @@
-* text=auto
 *.sh text eol=lf
-**/mvnw text eol=lf
-*.cmd text eol=crlf
+
+mvnw text eol=lf
+
+.gitattributes text eol=lf
+.gitignore text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.xml text eol=lf
+*.properties text eol=lf
+*.sql text eol=lf
+
 *.bat text eol=crlf
+*.cmd text eol=crlf
+
