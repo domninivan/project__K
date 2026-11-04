@@ -12,6 +12,5 @@ public interface ProductionOrderService {
     ProductionOrder createOrder(ProductionOrderRequestDTO orderDTO);
     ProductionOrder getOrderById(int id);
     List<ProductionOrder> getAllOrders();
-    List<ProductionOrderItem> getOrderItemsByOrderId(int order_id);
     ProductionOrder cancelOrder(int id);
 }

@@ -3,16 +3,13 @@
   "dockerComposeFile": "../docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/project__K",
-
   "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21"
+    },
     "ghcr.io/devcontainers/features/go:1": {
       "version": "latest",
       "golangciLintVersion": "latest"
-    },
-    "ghcr.io/devcontainers/features/java:1": {
-      "version": "21",
-      "installMaven": true,
-      "installGradle": false
     },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "lts"
@@ -25,7 +22,6 @@
       "moby": false
     }
   },
-
   "customizations": {
     "vscode": {
       "extensions": [
@@ -51,30 +47,25 @@
       ],
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
-        "python.formatting.provider": "black",
-
         "editor.formatOnSave": true,
-
         "[javascript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
-
         "[css]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
-
         "[html]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
-
         "[yaml]": {
           "editor.defaultFormatter": "redhat.vscode-yaml"
         }
       }
     }
   },
-
   "remoteUser": "vscode",
-
+  "remoteEnv": {
+    "JAVA_HOME": "/usr/local/sdkman/candidates/java/current"
+  },
   "postCreateCommand": "bash .devcontainer/post-create.sh"
 }
