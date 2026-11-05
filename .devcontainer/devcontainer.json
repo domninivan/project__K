@@ -3,16 +3,14 @@
   "dockerComposeFile": "../docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/project__K",
-
   "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "installMaven": true
+    },
     "ghcr.io/devcontainers/features/go:1": {
       "version": "latest",
       "golangciLintVersion": "latest"
-    },
-    "ghcr.io/devcontainers/features/java:1": {
-      "version": "latest",
-      "installMaven": true,
-      "installGradle": false
     },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "lts"
@@ -25,7 +23,6 @@
       "moby": false
     }
   },
-
   "customizations": {
     "vscode": {
       "extensions": [
@@ -35,8 +32,6 @@
         "redhat.java",
         "ms-azuretools.vscode-docker",
         "bruno-api-client.bruno",
-        "mtxr.sqltools",
-        "mtxr.sqltools-driver-pg",
         "mhutchie.git-graph",
         "redhat.vscode-yaml",
         "ms-python.python",
@@ -46,24 +41,15 @@
         "dbaeumer.vscode-eslint",
         "ritwickdey.liveserver",
         "formulahendry.auto-rename-tag",
-        "pranaygp.vscode-css-peek"
+        "pranaygp.vscode-css-peek",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        "tamasfe.even-better-toml"
       ],
       "settings": {
-        "sqltools.connections": [
-          {
-            "name": "PostgreSQL (Docker)",
-            "driver": "PostgreSQL",
-            "server": "postgres",
-            "port": 5432,
-            "database": "postgres",
-            "username": "postgres",
-            "askForPassword": true,
-            "connectionTimeout": 5000
-          }
-        ],
         "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
-        "python.formatting.provider": "black",
         "editor.formatOnSave": true,
+        "python.formatting.provider": "black",
         "[javascript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
@@ -79,7 +65,6 @@
       }
     }
   },
-
   "remoteUser": "vscode",
-  "postCreateCommand": "npm install -g @usebruno/cli && go version && java -version && mvn -version && bru --version && python3 --version && node --version"
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
 }

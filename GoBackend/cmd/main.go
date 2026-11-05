@@ -24,8 +24,8 @@ func main() {
 
 	router := api.SetupRouter(pool)
 
-	log.Println("Сервер запущен на http://localhost:8080")
-	if err := router.Run(":8080"); err != nil {
+	log.Println("Сервер запущен на http://localhost:8081")
+	if err := router.Run(":8081"); err != nil {
 		log.Fatalf("Ошибка запуска сервера: %v", err)
 	}
 }
