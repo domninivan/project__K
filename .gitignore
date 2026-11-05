@@ -183,4 +183,13 @@ docker-compose.override.yml
 # Local configuration
 # ========================================
 *.local
->>>>>>> origin/main
+
+# 1C
+OneC/base/
+*.1CD
+*.1cd
+1Cv8.*
+*.cf
+*.dt
+*.cfu
+
