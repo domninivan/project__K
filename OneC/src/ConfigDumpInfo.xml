@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ConfigDumpInfo xmlns="http://v8.1c.ru/8.3/xcf/dumpinfo" xmlns:xen="http://v8.1c.ru/8.3/xcf/enums" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" format="Hierarchical" version="2.21">
+	<ConfigVersions>
+		<Metadata name="Catalog.ЕдиницыИзмерения" id="d866d00c-10d1-42e5-9146-7a7f9494acfd" configVersion="5a206f60addc584c8edba7760b146e3d00000000"/>
+		<Metadata name="Catalog.ЕдиницыИзмерения.Form.ФормаСписка" id="83f2d819-f981-4226-aa44-e1439259ff30" configVersion="2a4dcbb105fc4846a9faefd092fb5be200000000"/>
+		<Metadata name="Catalog.ЕдиницыИзмерения.Form.ФормаСписка.Form" id="83f2d819-f981-4226-aa44-e1439259ff30.0" configVersion="d477c6146758284c87f0c7bc194a8cf300000000"/>
+		<Metadata name="Catalog.ЕдиницыИзмерения.Form.ФормаЭлемента" id="a0ee84ab-7d51-4a84-b1d0-0a9ed886d30f" configVersion="a7260cce0a350a46a675a1787b5cf4ea00000000"/>
+		<Metadata name="Catalog.ЕдиницыИзмерения.Form.ФормаЭлемента.Form" id="a0ee84ab-7d51-4a84-b1d0-0a9ed886d30f.0" configVersion="9f0e6e88c69202479318c3b5b28362ee00000000"/>
+		<Metadata name="Catalog.ЕдиницыИзмерения.ObjectModule" id="d866d00c-10d1-42e5-9146-7a7f9494acfd.0" configVersion="0956d08b5400734895c92b84967f498400000000"/>
+		<Metadata name="Catalog.Материалы" id="41959ba4-ecef-4c4d-8af0-ad1077e8c825" configVersion="adc1d7dc00683f448de2650b9d90bf6c00000000">
+			<Metadata name="Catalog.Материалы.Attribute.ЕдиницаИзмерения" id="abf0a815-74af-4b43-a7b3-58855a3048a3"/>
+			<Metadata name="Catalog.Материалы.Attribute.ЦенаЗаЕдиницу" id="cfb68132-7213-487c-9ae5-408b70105602"/>
+		</Metadata>
+		<Metadata name="Catalog.Материалы.Form.ФормаСписка" id="3d0db0a0-0607-4c6e-b327-e0ecc23f5b91" configVersion="575b2bd905fe9249aaac34ee1696389700000000"/>
+		<Metadata name="Catalog.Материалы.Form.ФормаСписка.Form" id="3d0db0a0-0607-4c6e-b327-e0ecc23f5b91.0" configVersion="7f1abf4bb8797049b446fab8ec4e5d8100000000"/>
+		<Metadata name="Catalog.Материалы.Form.ФормаЭлемента" id="c1bd6dac-ac24-4231-b2f2-ce65563e11b3" configVersion="6bad854f426c534db9e56c52dd5c1c4d00000000"/>
+		<Metadata name="Catalog.Материалы.Form.ФормаЭлемента.Form" id="c1bd6dac-ac24-4231-b2f2-ce65563e11b3.0" configVersion="6e4413774360e74f89103f2e77700df600000000"/>
+		<Metadata name="Catalog.Материалы.ObjectModule" id="41959ba4-ecef-4c4d-8af0-ad1077e8c825.0" configVersion="e8ab54e8c66072429e8d7b4be497d52c00000000"/>
+		<Metadata name="CommonModule.МатериалыСервер" id="c0c4593c-b16a-4f7a-9955-e83994ebe62a" configVersion="313d3db45cb95f4880e80d53e612365f00000000"/>
+		<Metadata name="CommonModule.МатериалыСервер.Module" id="c0c4593c-b16a-4f7a-9955-e83994ebe62a.0" configVersion="897f2e273538d741afa7ac8613a3fe6b00000000"/>
+		<Metadata name="Configuration.MasterPlan_1C" id="00285938-abeb-4287-b5ea-b3b1a582f6b7" configVersion="cac59adbf5c32f4a8a682386ea3711b200000000"/>
+		<Metadata name="DataProcessor.РасчетСтоимостиМатериала" id="de03b84a-863a-4dac-b133-8e20f6269835" configVersion="306678f8d1d3ba40b7131552dd0bb58900000000">
+			<Metadata name="DataProcessor.РасчетСтоимостиМатериала.Attribute.ЕдиницаИзмерения" id="5171b5c3-7e3f-4b98-9203-6c5d04c9e9f4"/>
+			<Metadata name="DataProcessor.РасчетСтоимостиМатериала.Attribute.Материал" id="998e9d42-031a-4fc6-ba17-95a8e7e7003b"/>
+			<Metadata name="DataProcessor.РасчетСтоимостиМатериала.Attribute.Цена" id="c25a59da-a219-4327-a7e3-8a4f56f0b211"/>
+			<Metadata name="DataProcessor.РасчетСтоимостиМатериала.Attribute.Количество" id="db2c762a-0e18-4153-9510-9f4741c87435"/>
+			<Metadata name="DataProcessor.РасчетСтоимостиМатериала.Attribute.Результат" id="fa511ffd-0186-4017-95ae-691a30897573"/>
+		</Metadata>
+		<Metadata name="DataProcessor.РасчетСтоимостиМатериала.Form.Форма" id="31864f47-587e-4b47-afc0-6f2b0617149c" configVersion="8eee205c857195419aa8caea2483c87200000000"/>
+		<Metadata name="DataProcessor.РасчетСтоимостиМатериала.Form.Форма.Form" id="31864f47-587e-4b47-afc0-6f2b0617149c.0" configVersion="b71ea749c3286c4e9f1ea511cc8b88f400000000"/>
+		<Metadata name="Language.Русский" id="a19d618b-b4a6-458a-9453-e59af51add7b" configVersion="021a497d38ff2e47b94b30890bbc251300000000"/>
+		<Metadata name="Subsystem.Материалы" id="9dfce38f-df39-4ff4-b574-48e97edf6c0a" configVersion="00020b9c5baa304b914f248e8203fa8d00000000"/>
+	</ConfigVersions>
+</ConfigDumpInfo>
