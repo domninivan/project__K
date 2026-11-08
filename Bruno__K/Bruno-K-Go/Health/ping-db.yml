@@ -1,0 +1,14 @@
+info:
+  name: ping-db
+  type: http
+
+http:
+  method: GET
+  url: "{{goBaseUrl}}/api/v1/ping"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

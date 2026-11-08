@@ -1,16 +1,22 @@
-package api
+package router
 
 import (
 	"net/http"
 
+	"github.com/domninivan/project__K/GoBackend/internal/handler"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func SetupRouter(pool *pgxpool.Pool) *gin.Engine {
+type Handlers struct {
+	WorkCenter *handler.WorkCenterHandler
+}
+
+func SetupRouter(pool *pgxpool.Pool, h Handlers) *gin.Engine {
 	r := gin.Default()
 
 	v1 := r.Group("/api/v1")
+
 	{
 		v1.GET("/ping", func(c *gin.Context) {
 			if err := pool.Ping(c.Request.Context()); err != nil {
@@ -19,6 +25,10 @@ func SetupRouter(pool *pgxpool.Pool) *gin.Engine {
 			}
 			c.JSON(http.StatusOK, gin.H{"status": "ok", "message": "pong"})
 		})
+
+		v1.GET("/work-centers", h.WorkCenter.ListWorkCentersHandler)
+
+		v1.POST("/work-centers", h.WorkCenter.CreateWorkCenterHandler)
 
 	}
 
