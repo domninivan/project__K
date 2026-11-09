@@ -11,13 +11,13 @@ import (
 	"github.com/domninivan/project__K/GoBackend/internal/model"
 )
 
-type WorkCenterRepository struct{ pool *pgxpool.Pool }
+type WorkCenter struct{ pool *pgxpool.Pool }
 
-func NewWorkCenterRepository(pool *pgxpool.Pool) *WorkCenterRepository {
-	return &WorkCenterRepository{pool: pool}
+func NewWorkCenter(pool *pgxpool.Pool) *WorkCenter {
+	return &WorkCenter{pool: pool}
 }
 
-func (r *WorkCenterRepository) List(ctx context.Context) ([]model.WorkCenter, error) {
+func (r *WorkCenter) List(ctx context.Context) ([]model.WorkCenter, error) {
 	const q = `
 		SELECT wc.id, wc.code, wc.title, wc.active,
 		       COALESCE(
@@ -51,7 +51,7 @@ func (r *WorkCenterRepository) List(ctx context.Context) ([]model.WorkCenter, er
 	return out, nil
 }
 
-func (r *WorkCenterRepository) Create(ctx context.Context, req model.CreateWorkCenterRequest) (*model.WorkCenter, error) {
+func (r *WorkCenter) Create(ctx context.Context, req model.CreateWorkCenterRequest) (*model.WorkCenter, error) {
 	tx, err := r.pool.Begin(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("begin tx: %w", err)

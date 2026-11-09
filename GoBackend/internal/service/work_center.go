@@ -4,22 +4,25 @@ import (
 	"context"
 
 	"github.com/domninivan/project__K/GoBackend/internal/model"
-	"github.com/domninivan/project__K/GoBackend/internal/repository"
 )
 
-type WorkCenterService struct {
-	repo *repository.WorkCenterRepository
+type WorkCenterRepository interface {
+	List(ctx context.Context) ([]model.WorkCenter, error)
+	Create(ctx context.Context, req model.CreateWorkCenterRequest) (*model.WorkCenter, error)
+}
+type WorkCenter struct {
+	repo WorkCenterRepository
 }
 
-func NewWorkCenterService(repo *repository.WorkCenterRepository) *WorkCenterService {
-	return &WorkCenterService{repo: repo}
+func NewWorkCenter(repo WorkCenterRepository) *WorkCenter {
+	return &WorkCenter{repo: repo}
 }
 
-func (s *WorkCenterService) List(ctx context.Context) ([]model.WorkCenter, error) {
+func (s *WorkCenter) List(ctx context.Context) ([]model.WorkCenter, error) {
 	return s.repo.List(ctx)
 }
 
-func (s *WorkCenterService) Create(ctx context.Context, req model.CreateWorkCenterRequest) (*model.WorkCenter, error) {
+func (s *WorkCenter) Create(ctx context.Context, req model.CreateWorkCenterRequest) (*model.WorkCenter, error) {
 	req.OperationTypes = dedup(req.OperationTypes)
 	return s.repo.Create(ctx, req)
 }

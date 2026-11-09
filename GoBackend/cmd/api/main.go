@@ -25,15 +25,18 @@ func main() {
 	}
 	defer pool.Close()
 
-	wcRepo := repository.NewWorkCenterRepository(pool)
-	wcSvc := service.NewWorkCenterService(wcRepo)
-	wcH := handler.NewWorkCenterHandler(wcSvc)
+	healthRepo := repository.NewHealth(pool)
+	workCenterRepo := repository.NewWorkCenter(pool)
+
+	healthSvc := service.NewHealth(healthRepo)
+	workCenterSvc := service.NewWorkCenter(workCenterRepo)
 
 	handlers := router.Handlers{
-		WorkCenter: wcH,
+		Health:     handler.NewHealth(healthSvc),
+		WorkCenter: handler.NewWorkCenter(workCenterSvc),
 	}
 
-	engine := router.SetupRouter(pool, handlers)
+	engine := router.New(handlers)
 
 	log.Printf("Server started at http://localhost:%s", cfg.ServerPort)
 	if err := engine.Run(":" + cfg.ServerPort); err != nil {
