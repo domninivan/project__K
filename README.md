@@ -405,6 +405,26 @@ java -jar target/production-java-backend.jar
 
 ---
 
+# Запуск Frontend
+
+Frontend сделан на React + Vite. Пока страницы берут данные из `src/mocks/mockData.js`, поэтому Java, Go и 1С для запуска не нужны.
+
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+Открыть http://localhost:5173
+
+Страницы:
+
+- `/products` — каталог изделий (сюда же перенаправляет `/`)
+- `/orders/new` — форма заказа
+- `/orders` — список заказов
+
+---
+
 # Полезные команды Docker
 
 ```bash
