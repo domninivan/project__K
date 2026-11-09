@@ -74,16 +74,12 @@ else
 fi
 
 
-if [[ ! -f "$GO_BACKEND/.env" ]]; then
-    if [[ -f "$GO_BACKEND/.env.example" ]]; then
-        cp "$GO_BACKEND/.env.example" "$GO_BACKEND/.env"
-        echo "[OK] Created GoBackend/.env from GoBackend/.env.example"
-    else
-        echo "[ERROR] GoBackend/.env.example not found"
-        exit 1
-    fi
+if [[ -f "$GO_BACKEND/.env.example" ]]; then
+    cp "$GO_BACKEND/.env.example" "$GO_BACKEND/.env"
+    echo "[OK] GoBackend/.env updated from GoBackend/.env.example"
 else
-    echo "[OK] GoBackend/.env already exists, skipping"
+    echo "[ERROR] GoBackend/.env.example not found"
+    exit 1
 fi
 
 if ! command -v air >/dev/null 2>&1; then
@@ -109,6 +105,78 @@ if [ -f "$PROJECT/Scripts/install-dependencies.sh" ]; then
 else
     echo "WARNING: install-dependencies.sh not found"
 fi
+
+# ----------------------------------------
+# Create GoBackend database if not exists
+# ----------------------------------------
+
+echo ""
+echo "========================================"
+echo "Preparing GoBackend database..."
+echo "========================================"
+
+: "${GO_DB_HOST:?GO_DB_HOST is not set}"
+: "${GO_DB_PORT:?GO_DB_PORT is not set}"
+: "${GO_DB_USER:?GO_DB_USER is not set}"
+: "${GO_DB_PASSWORD:?GO_DB_PASSWORD is not set}"
+: "${GO_DB_NAME:?GO_DB_NAME is not set}"
+
+export PGPASSWORD="$GO_DB_PASSWORD"
+
+cleanup() {
+    unset PGPASSWORD
+}
+
+trap cleanup EXIT
+
+if ! pg_isready \
+    -h "$GO_DB_HOST" \
+    -p "$GO_DB_PORT" \
+    -U "$GO_DB_USER" >/dev/null 2>&1; then
+
+    echo "[ERROR] PostgreSQL is not available"
+    exit 1
+fi
+
+DB_EXISTS=$(psql \
+    -h "$GO_DB_HOST" \
+    -p "$GO_DB_PORT" \
+    -U "$GO_DB_USER" \
+    -d postgres \
+    -tAc "SELECT EXISTS (
+        SELECT 1
+        FROM pg_database
+        WHERE datname = '$GO_DB_NAME'
+    );")
+
+if [[ "$DB_EXISTS" == "t" ]]; then
+    echo "[OK] Database '$GO_DB_NAME' already exists. Skipping."
+else
+    psql \
+        -h "$GO_DB_HOST" \
+        -p "$GO_DB_PORT" \
+        -U "$GO_DB_USER" \
+        -d postgres \
+        -v ON_ERROR_STOP=1 \
+        -c "CREATE DATABASE \"$GO_DB_NAME\" OWNER \"$GO_DB_USER\";"
+
+    echo "[OK] Database '$GO_DB_NAME' created."
+fi
+
+echo "[OK] GoBackend database preparation completed."
+
+# ----------------------------------------
+# Apply GoBackend database migrations
+# ----------------------------------------
+
+echo ""
+echo "========================================"
+echo "Applying GoBackend migrations..."
+echo "========================================"
+
+bash "$PROJECT/Scripts/migrate-go-helper.sh" up
+
+echo "[OK] GoBackend migrations applied."
 
 # ----------------------------------------
 # 9. Verify installed tools
