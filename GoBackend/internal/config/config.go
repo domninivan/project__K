@@ -17,6 +17,8 @@ type Config struct {
 	DBPassword string
 	DBName     string
 	ServerPort string
+	LogLevel   string
+	LogFormat  string
 }
 
 func Load() (*Config, error) {
@@ -37,6 +39,8 @@ func Load() (*Config, error) {
 		DBPassword: os.Getenv("GO_DB_PASSWORD"),
 		DBName:     os.Getenv("GO_DB_NAME"),
 		ServerPort: getenv("SERVER_PORT", "8081"),
+		LogLevel:   getenv("GO_LOG_LEVEL", "INFO"),
+		LogFormat:  getenv("GO_LOG_FORMAT", "text"),
 	}
 
 	if err := cfg.validate(); err != nil {
