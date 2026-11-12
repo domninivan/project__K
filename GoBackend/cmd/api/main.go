@@ -55,11 +55,11 @@ func run() error {
 	workCenterSvc := service.NewWorkCenter(workCenterRepo)
 
 	handlers := router.Handlers{
-		Health:     handler.NewHealth(healthSvc),
-		WorkCenter: handler.NewWorkCenter(workCenterSvc),
+		Health:     handler.NewHealth(healthSvc, httpLog),
+		WorkCenter: handler.NewWorkCenter(workCenterSvc, httpLog),
 	}
 
-	engine := router.New(handlers)
+	engine := router.New(handlers, httpLog)
 
 	httpLog.Info("listening", "addr", ":"+cfg.ServerPort)
 	if err := engine.Run(":" + cfg.ServerPort); err != nil {

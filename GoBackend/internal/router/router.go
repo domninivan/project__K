@@ -1,7 +1,10 @@
 package router
 
 import (
+	"log/slog"
+
 	"github.com/domninivan/project__K/GoBackend/internal/handler"
+	"github.com/domninivan/project__K/GoBackend/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,8 +13,9 @@ type Handlers struct {
 	Health     *handler.Health
 }
 
-func New(h Handlers) *gin.Engine {
-	r := gin.Default()
+func New(h Handlers, logger *slog.Logger) *gin.Engine {
+	r := gin.New()
+	r.Use(middleware.Logging(logger), middleware.Recovery(logger))
 
 	v1 := r.Group("/api/v1")
 
