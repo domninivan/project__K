@@ -1,7 +1,62 @@
-import { orders, products } from "../mocks/mockData";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import OrderForm from "../components/orders/OrderForm";
+import { products as mockProducts } from "../mocks/mockData";
+import { isApi, isMock } from "../config/dataMode";
+import { getProducts } from "../api/productsApi";
+import { createOrder } from "../api/ordersApi";
 
 function CreateOrderPage() {
-  const order = orders[0];
+  const navigate = useNavigate();
+
+  const [products, setProducts] = useState(isApi ? [] : mockProducts);
+  const [loading, setLoading] = useState(isApi);
+  const [error, setError] = useState(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
+  async function loadProducts() {
+    setLoading(true);
+    setError(null);
+    try {
+      setProducts(await getProducts());
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (isApi) {
+      loadProducts();
+    }
+  }, []);
+
+  async function handleSubmit(payload) {
+    // Защита от повторной отправки.
+    if (isSubmitting) {
+      return;
+    }
+
+    // Демонстрационный режим: запросы не выполняются.
+    if (isMock) {
+      setSubmitError("Демонстрационный режим: сохранение недоступно");
+      return;
+    }
+
+    setSubmitError(null);
+    setIsSubmitting(true);
+    try {
+      const created = await createOrder(payload);
+      navigate("/orders", { state: { createdOrderId: created.id } });
+    } catch (err) {
+      setSubmitError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <div>
@@ -10,71 +65,29 @@ function CreateOrderPage() {
         <p>Добавьте изделия в заказ, укажите количество и желаемую дату</p>
       </div>
 
-      <div className="card">
-        <h3>1. Добавить изделие</h3>
-        <div className="add-row">
-          <select defaultValue="">
-            <option value="" disabled>
-              Выберите изделие
-            </option>
-            {products.map((product) => (
-              <option key={product.id} value={product.id}>
-                {product.title}
-              </option>
-            ))}
-          </select>
-          <button type="button">Добавить</button>
+      {isApi && loading && <p>Загрузка каталога…</p>}
+
+      {isApi && error && !loading && (
+        <div role="alert">
+          <p>Не удалось загрузить каталог: {error}</p>
+          <button type="button" onClick={loadProducts}>
+            Повторить
+          </button>
         </div>
-      </div>
+      )}
 
-      <div className="card table-card">
-        <h3 className="table-title">2. Состав заказа</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Изделие</th>
-              <th>Количество, шт.</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {order.items.map((item) => (
-              <tr key={item.id}>
-                <td>{item.productTitle}</td>
-                <td>
-                  <input type="number" min="1" defaultValue={item.quantity} />
-                </td>
-                <td className="actions">
-                  <button type="button" className="delete-btn">
-                    Удалить
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {!loading && !error && products.length === 0 && (
+        <p>Каталог пуст — оформление заказа пока недоступно.</p>
+      )}
 
-      <div className="card">
-        <h3>3. Параметры заказа</h3>
-        <div className="form">
-          <label>
-            Желаемая дата
-            <input type="date" defaultValue={order.dueDate} />
-          </label>
-
-          <label>
-            Комментарий
-            <textarea rows="3" defaultValue={order.comment} />
-          </label>
-        </div>
-      </div>
-
-      <div className="actions">
-        <button type="button" className="submit-btn">
-          Оформить заказ
-        </button>
-      </div>
+      {!loading && !error && products.length > 0 && (
+        <OrderForm
+          products={products}
+          onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+          submitError={submitError}
+        />
+      )}
     </div>
   );
 }

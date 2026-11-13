@@ -261,6 +261,31 @@ tbody tr:hover {
   color: #047857;
 }
 
+.status-ready_for_planning {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.status-plan_proposed {
+  background-color: #ede9fe;
+  color: #6d28d9;
+}
+
+.status-in_production {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.status-completed {
+  background-color: #cffafe;
+  color: #0e7490;
+}
+
+.status-cancelled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
 .priority-high {
   background-color: #fee2e2;
   color: #b91c1c;
