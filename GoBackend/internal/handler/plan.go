@@ -17,3 +17,7 @@ func NewPlan(log *slog.Logger) *Plan {
 func (h *Plan) CreatePlan(c *gin.Context) {
 
 }
+
+func (h *Plan) GetOrderPlan(c *gin.Context) {
+
+}
