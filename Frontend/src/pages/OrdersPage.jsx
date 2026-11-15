@@ -1,4 +1,5 @@
-import { orders } from "../mocks/mockData";
+import { Link } from "react-router-dom";
+import { useOrders } from "../context/OrdersContext";
 
 const statusNames = {
   NEW: "Новый",
@@ -21,19 +22,25 @@ function formatDate(date) {
 }
 
 function OrdersPage() {
+  const { orders } = useOrders();
   return (
     <div>
-      <div className="page-title">
-        <h2>Список заказов</h2>
-        <p>Всего заказов: {orders.length}</p>
+      <div className="page-header">
+        <div>
+          <h2>Заказы</h2>
+          <p>Всего заказов: {orders.length}</p>
+        </div>
+        <Link to="/orders/new" className="button-link">
+          + Создать заказ
+        </Link>
       </div>
 
-      <div className="card table-card">
+      <div className="card table-wrap">
         <table>
           <thead>
             <tr>
               <th>Номер</th>
-              <th>Состав</th>
+              <th>Состав заказа</th>
               <th>Желаемая дата</th>
               <th>Статус</th>
               <th>Приоритет</th>
@@ -42,9 +49,7 @@ function OrdersPage() {
           <tbody>
             {orders.map((order) => (
               <tr key={order.id}>
-                <td>
-                  <b>№ {order.id}</b>
-                </td>
+                <td>{order.id}</td>
                 <td>
                   {order.items.map((item) => (
                     <div key={item.id}>

@@ -419,9 +419,11 @@ npm run dev
 
 Страницы:
 
-- `/products` — каталог изделий (сюда же перенаправляет `/`)
-- `/orders/new` — форма заказа
-- `/orders` — список заказов
+- `/orders` — заказы (сюда же перенаправляет `/`)
+- `/orders/new` — новый заказ
+- `/products` — изделия
+
+Подробнее — в [Frontend/README.md](Frontend/README.md).
 
 ---
 
