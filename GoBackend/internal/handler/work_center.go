@@ -64,3 +64,15 @@ func (h *WorkCenter) CreateWorkCenter(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, wc)
 }
+
+func (h *WorkCenter) GetSchedule(c *gin.Context) {
+
+}
+
+func (h *WorkCenter) ReplaceSchedule(c *gin.Context) {
+
+}
+
+func (h *WorkCenter) GetAvailability(c *gin.Context) {
+
+}

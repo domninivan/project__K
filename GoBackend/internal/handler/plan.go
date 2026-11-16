@@ -21,3 +21,15 @@ func (h *Plan) CreatePlan(c *gin.Context) {
 func (h *Plan) GetOrderPlan(c *gin.Context) {
 
 }
+
+func (h *Plan) AcceptPlan(c *gin.Context) {
+
+}
+
+func (h *Plan) RejectPlan(c *gin.Context) {
+
+}
+
+func (n *Plan) CancelOrderPlan(c *gin.Context) {
+
+}
