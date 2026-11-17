@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "purpose": "Предлагаемые учебные этапы. Даты и объём согласуются с куратором; автоматически в трекере не создаются.",
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "M1 — Постановка задачи",
+      "due_date": null,
+      "exit_criteria": [
+        "Согласованы цель, границы и обязательные требования.",
+        "Указаны участники и ответственность."
+      ],
+      "reference_documents": [
+        "README.md",
+        "TEAM.md",
+        "docs/01-charter.md",
+        "docs/02-requirements.md"
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "M2 — Первый рабочий сценарий",
+      "due_date": null,
+      "exit_criteria": [
+        "Воспроизводится основной сценарий.",
+        "Описаны устройство, выбранные технологии и проверка сценария."
+      ],
+      "reference_documents": [
+        "README.md",
+        "docs/03-architecture.md",
+        "docs/adr/0001-tech-stack.md",
+        "tests/README.md"
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "M3 — Минимальная рабочая версия",
+      "due_date": null,
+      "exit_criteria": [
+        "Выполнены согласованные обязательные требования.",
+        "Фактические результаты проверок зафиксированы; известные проблемы описаны."
+      ],
+      "reference_documents": [
+        "docs/02-requirements.md",
+        "tests/README.md",
+        "docs/04-progress.md"
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "M4 — Защита и передача",
+      "due_date": null,
+      "exit_criteria": [
+        "Другой человек может воспроизвести результат по инструкции.",
+        "Готовы демонстрация, ограничения и подтверждения вклада участников."
+      ],
+      "reference_documents": [
+        "README.md",
+        "TEAM.md",
+        "tests/README.md",
+        "docs/04-progress.md"
+      ]
+    }
+  ]
+}
