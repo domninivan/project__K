@@ -47,4 +47,43 @@ public class PlanningExceptionHandler {
                         "message", ex.getMessage()
                 ));
     }
+
+    @ExceptionHandler(GoBadRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleBadRequest(
+            GoBadRequestException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                        "status", HttpStatus.BAD_REQUEST.value(),
+                        "error", "Bad Request",
+                        "message", ex.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(GoResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFound(
+            GoResourceNotFoundException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "status", HttpStatus.NOT_FOUND.value(),
+                        "error", "Not Found",
+                        "message", ex.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(GoConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflict(
+            GoConflictException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of(
+                        "status", HttpStatus.CONFLICT.value(),
+                        "error", "Conflict",
+                        "message", ex.getMessage()
+                ));
+    }
 }
