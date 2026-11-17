@@ -5,20 +5,6 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 echo "=== Установка зависимостей проекта ==="
 
-# Resolve the installed JDK when the shell inherited a stale JAVA_HOME.
-if [[ ! -x "${JAVA_HOME:-}/bin/java" || ! -x "${JAVA_HOME:-}/bin/javac" ]]; then
-    if [[ -x /usr/local/sdkman/candidates/java/current/bin/javac ]]; then
-        export JAVA_HOME=/usr/local/sdkman/candidates/java/current
-    elif command -v javac >/dev/null 2>&1; then
-        JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")"
-        export JAVA_HOME
-    else
-        echo "ОШИБКА: JDK не найден. Пересоберите Dev Container с Java 21." >&2
-        exit 1
-    fi
-fi
-export PATH="$JAVA_HOME/bin:$PATH"
-
 # Go backend
 if [[ -f "$ROOT/GoBackend/go.mod" ]]; then
     echo "=== GoBackend ==="

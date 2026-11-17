@@ -2,22 +2,20 @@ package repository
 
 import (
 	"context"
-	"os"
+	"fmt"
 
+	"github.com/domninivan/project__K/GoBackend/internal/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPostgres(ctx context.Context) (*pgxpool.Pool, error) {
-
-	pool, err := pgxpool.New(ctx, os.Getenv("DATABASE_URL"))
+func NewPostgresPool(ctx context.Context, cfg *config.Config) (*pgxpool.Pool, error) {
+	pool, err := pgxpool.New(ctx, cfg.DSN())
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create PostgreSQL pool: %w", err)
 	}
-
 	if err := pool.Ping(ctx); err != nil {
 		pool.Close()
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
 	}
-
 	return pool, nil
 }

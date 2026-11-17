@@ -5,7 +5,8 @@
   "workspaceFolder": "/workspaces/project__K",
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
-      "version": "21"
+      "version": "21",
+      "installMaven": true
     },
     "ghcr.io/devcontainers/features/go:1": {
       "version": "latest",
@@ -48,6 +49,7 @@
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
         "editor.formatOnSave": true,
+        "python.formatting.provider": "black",
         "[javascript]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
@@ -64,8 +66,5 @@
     }
   },
   "remoteUser": "vscode",
-  "remoteEnv": {
-    "JAVA_HOME": "/usr/local/sdkman/candidates/java/current"
-  },
   "postCreateCommand": "bash .devcontainer/post-create.sh"
 }
