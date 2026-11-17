@@ -36,9 +36,12 @@ jobs:
           git remote add gitverse "https://${GITVERSE_REPO}"
 
           # --force: перезапись refs, --prune: удаление веток/тегов, которых нет в источнике
-          git push --force --prune gitverse \
+          git push --force \
+            gitverse \
             "+refs/heads/*:refs/heads/*" \
             "+refs/tags/*:refs/tags/*"
+          # --prune был убран выше
+
 
           # Smoke-test: HEAD default-ветки должен совпасть
           default_branch=$(git symbolic-ref --short HEAD)
