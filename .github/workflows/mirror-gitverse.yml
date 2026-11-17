@@ -32,6 +32,7 @@ jobs:
           git clone --bare "https://github.com/${GITHUB_REPOSITORY}.git" repo.git
 
           cd repo.git
+          git config http.postBuffer 524288000
           git config "http.https://gitverse.ru/.extraheader" "Authorization: basic ${gv_auth}"
           git remote add gitverse "https://${GITVERSE_REPO}"
 
