@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -19,6 +20,7 @@ type Config struct {
 	ServerPort string
 	LogLevel   string
 	LogFormat  string
+	Timezone   *time.Location
 }
 
 func Load() (*Config, error) {
