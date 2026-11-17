@@ -38,10 +38,9 @@ jobs:
 
           # --force: перезапись refs, --prune: удаление веток/тегов, которых нет в источнике
           git push --force \
-            gitverse \
+            --prune gitverse \
             "+refs/heads/*:refs/heads/*" \
             "+refs/tags/*:refs/tags/*"
-          # --prune был убран выше
 
 
           # Smoke-test: HEAD default-ветки должен совпасть
