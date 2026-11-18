@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{goBaseUrl}}/api/v1/work-centers"
+  url: "{{goBaseUrl}}/api/work-centers"
   body:
     type: json
     data: |-

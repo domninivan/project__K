@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{goBaseUrl}}/api/v1/ready"
+  url: "{{goBaseUrl}}/api/ready"
   auth: inherit
 
 settings:

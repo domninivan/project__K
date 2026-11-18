@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{goBaseUrl}}/api/v1/work-centers"
+  url: "{{goBaseUrl}}/api/work-centers"
   auth: inherit
 
 settings:
