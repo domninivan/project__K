@@ -11,4 +11,6 @@ public interface ProductService {
     List<Product> getAllProducts();
     Product getProduct(int id);
     ProductDetails getProductDetails(int productId);
+    List<ProductOperation> getProductOperations(int productId);
+
 }
