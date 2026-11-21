@@ -17,7 +17,6 @@ http:
       }
   auth: inherit
 
-# Повторный прогон на той же БД вернёт 409 (code UNIQUE) — это тоже валидный ответ.
 runtime:
   scripts:
     - type: tests
