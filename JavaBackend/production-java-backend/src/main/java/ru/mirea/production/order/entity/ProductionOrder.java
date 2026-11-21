@@ -17,6 +17,13 @@ public class ProductionOrder {
     @Column(name = "id")
     private Integer id;
 
+    // Nullable only for legacy orders awaiting explicit owner assignment.
+    @Column(name = "client_id")
+    private Long clientId;
+
+    public Long getClientId() { return clientId; }
+    public void setClientId(Long clientId) { this.clientId = clientId; }
+
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
 

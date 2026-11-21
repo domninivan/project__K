@@ -3,6 +3,13 @@
   "dockerComposeFile": "../docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/project__K",
+  "initializeCommand": [
+    "docker", "run", "--rm", "--user", "0:0",
+    "--mount", "type=bind,source=${localWorkspaceFolder},target=/workspace",
+    "--workdir", "/workspace", "--entrypoint", "bash",
+    "mcr.microsoft.com/devcontainers/base:trixie",
+    ".devcontainer/init-java-env.sh"
+  ],
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
       "version": "21",

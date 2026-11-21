@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ProductionOrderDAO {
     List<ProductionOrder> getAllOrders();
+    List<ProductionOrder> getOrdersByClientId(Long clientId);
+    ProductionOrder getOrderByIdAndClientId(int id, Long clientId);
     ProductionOrder getOrderById(int id);
     ProductionOrder saveOrder(ProductionOrder order);
 

@@ -70,9 +70,11 @@ bash Scripts/install-dependencies.sh
 | БД Go | `go_db` | `go_db` |
 | Пользователь и пароль учебного Compose | `postgres` / `postgres` | `postgres` / `postgres` |
 
+До создания Dev Container `initializeCommand` запускает `.devcontainer/init-java-env.sh` в одноразовом Docker-контейнере. Он автоматически создаёт `JavaBackend/production-java-backend/.env` из шаблона и заполняет пустой или отсутствующий JWT_SECRET_BASE64 случайным ключом. Непустой существующий ключ и другие настройки сохраняются. Файл исключён из Git, ключ не выводится в лог. Compose затем передаёт его переменные контейнеру app через env_file. После ручного изменения файла пересоздайте Dev Container. Для прямого запуска Compose без Dev Containers сначала выполните подготовку по [инструкции](15-local-development.md).
+
 Java получает `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`; Go — `GO_DB_HOST`, `GO_DB_PORT`, `GO_DB_USER`, `GO_DB_PASSWORD`, `GO_DB_NAME` из Compose. Это демонстрационные настройки локальной среды.
 
-При первой инициализации пустого тома PostgreSQL выполняет `database/01-schema.sql` и `database/02-seed.sql` для Java. Go-миграции применяет post-create отдельно. Редактирование Java SQL-файлов не изменяет уже созданную БД автоматически.
+Docker создаёт БД PostgreSQL; Java-таблицы и демонстрационные данные создаёт только Flyway при первом запуске JavaBackend. Миграции находятся в `JavaBackend/production-java-backend/src/main/resources/db/migration` и применяются перед Hibernate validate. Go-миграции применяет post-create отдельно. Общий `Scripts/app-start.sh` сам выбирает однократный baseline для проверенной исходной V1 без истории; неизвестная структура прерывает запуск. Подробности и ручной запуск Maven — в [локальной разработке](15-local-development.md#автоматический-baseline-java). Существующий Docker-том сохраняется. Для JWT нужен заполненный JavaBackend/production-java-backend/.env; первого планировщика можно зарегистрировать без токена через POST /api/users, указав role=PLANNER.
 
 Проверка из терминала контейнера (psql запросит пароль):
 

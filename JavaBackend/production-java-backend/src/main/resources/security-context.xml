@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/security https://www.springframework.org/schema/security/spring-security.xsd">
+
+    <beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    <beans:bean id="accountDetailsService" class="ru.mirea.production.security.AccountDetailsService">
+        <beans:constructor-arg ref="dataSource"/>
+    </beans:bean>
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="accountDetailsService">
+            <password-encoder ref="passwordEncoder"/>
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean id="tokenService" class="ru.mirea.production.security.TokenService">
+        <beans:constructor-arg value="${JWT_SECRET_BASE64}"/>
+        <beans:constructor-arg value="${JWT_TTL_SECONDS:900}"/>
+        <beans:constructor-arg value="case22-java"/>
+    </beans:bean>
+    <beans:bean id="jwtDecoder" factory-bean="tokenService" factory-method="decoder"/>
+    <beans:bean id="accountJwtConverter" class="ru.mirea.production.security.AccountJwtConverter">
+        <beans:constructor-arg ref="accountDetailsService"/>
+    </beans:bean>
+    <beans:bean id="securityErrors" class="ru.mirea.production.security.SecurityErrors"/>
+    <beans:bean id="corsSource" class="org.springframework.web.cors.UrlBasedCorsConfigurationSource">
+        <beans:property name="corsConfigurations">
+            <beans:map>
+                <beans:entry key="/**">
+                    <beans:bean class="org.springframework.web.cors.CorsConfiguration">
+                        <beans:property name="allowedOrigins">
+                            <beans:list><beans:value>${CORS_ALLOWED_ORIGIN:http://localhost:5173}</beans:value></beans:list>
+                        </beans:property>
+                        <beans:property name="allowedMethods">
+                            <beans:list>
+                                <beans:value>GET</beans:value><beans:value>POST</beans:value>
+                                <beans:value>PUT</beans:value><beans:value>DELETE</beans:value><beans:value>OPTIONS</beans:value>
+                            </beans:list>
+                        </beans:property>
+                        <beans:property name="allowedHeaders">
+                            <beans:list>
+                                <beans:value>Authorization</beans:value><beans:value>Content-Type</beans:value>
+                                <beans:value>Idempotency-Key</beans:value>
+                            </beans:list>
+                        </beans:property>
+                        <beans:property name="allowCredentials" value="false"/>
+                    </beans:bean>
+                </beans:entry>
+            </beans:map>
+        </beans:property>
+    </beans:bean>
+
+    <http create-session="stateless" request-matcher="ant" use-expressions="true" entry-point-ref="securityErrors">
+        <intercept-url pattern="/api/auth/login" method="POST" access="permitAll"/>
+        <intercept-url pattern="/api/me" method="GET" access="isAuthenticated()"/>
+        <intercept-url pattern="/api/users" method="POST" access="permitAll"/>
+        <intercept-url pattern="/api/products/**" method="GET" access="hasAnyRole('CLIENT','PLANNER','SHOP_MANAGER','WORKER')"/>
+        <intercept-url pattern="/api/orders" method="POST" access="hasRole('CLIENT')"/>
+        <intercept-url pattern="/api/orders/**" method="GET" access="hasAnyRole('CLIENT','PLANNER')"/>
+        <intercept-url pattern="/api/orders/*" method="DELETE" access="hasRole('CLIENT')"/>
+        <intercept-url pattern="/api/planner/**" access="hasRole('PLANNER')"/>
+        <intercept-url pattern="/error" access="permitAll"/>
+        <intercept-url pattern="/**" access="denyAll"/>
+        <csrf disabled="true"/>
+        <cors configuration-source-ref="corsSource"/>
+        <access-denied-handler ref="securityErrors"/>
+        <oauth2-resource-server entry-point-ref="securityErrors">
+            <jwt decoder-ref="jwtDecoder" jwt-authentication-converter-ref="accountJwtConverter"/>
+        </oauth2-resource-server>
+    </http>
+</beans:beans>

@@ -13,6 +13,10 @@ import ru.mirea.production.product.entity.Product;
 import ru.mirea.production.product.service.ProductService;
 
 import java.util.*;
+import ru.mirea.production.security.CurrentActor;
+import ru.mirea.production.user.entity.Role;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @Service
 public class ProductionOrderServiceImpl implements ProductionOrderService{
@@ -26,8 +30,10 @@ public class ProductionOrderServiceImpl implements ProductionOrderService{
     @Override
     @Transactional
     public ProductionOrder createOrder(ProductionOrderRequestDTO orderDTO){
+        var actor = CurrentActor.require(Role.CLIENT);
         ProductionOrder order =
                 new ProductionOrder(orderDTO.dueDate(), orderDTO.comment());
+        order.setClientId(actor.getId());
 
         Map<Integer, Integer> productQuantities = new LinkedHashMap<>();
         for(var item: orderDTO.items()){
@@ -45,7 +51,10 @@ public class ProductionOrderServiceImpl implements ProductionOrderService{
     @Override
     @Transactional(readOnly = true)
     public ProductionOrder getOrderById(int id) {
-        ProductionOrder productionOrder = productionOrderDAO.getOrderById(id);
+        var actor = CurrentActor.require(Role.CLIENT, Role.PLANNER);
+        ProductionOrder productionOrder = actor.getRole() == Role.PLANNER
+                ? productionOrderDAO.getOrderById(id)
+                : productionOrderDAO.getOrderByIdAndClientId(id, actor.getId());
         if (productionOrder == null) {
             throw new OrderNotFoundException(
                     "Заказ с ID = " + id + " не найден"
@@ -57,16 +66,24 @@ public class ProductionOrderServiceImpl implements ProductionOrderService{
     @Override
     @Transactional(readOnly = true)
     public List<ProductionOrder> getAllOrders() {
-        return productionOrderDAO.getAllOrders();
+        var actor = CurrentActor.require(Role.CLIENT, Role.PLANNER);
+        return actor.getRole() == Role.PLANNER ? productionOrderDAO.getAllOrders()
+                : productionOrderDAO.getOrdersByClientId(actor.getId());
     }
 
     @Override
     @Transactional
     public ProductionOrder cancelOrder(int id) {
+        CurrentActor.require(Role.CLIENT);
         ProductionOrder productionOrder = getOrderById(id);
 
         if (productionOrder.getStatus() == StatusEnum.CANCELLED) {
             return productionOrder;
+        }
+
+        if (productionOrder.getStatus() != StatusEnum.NEW) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Отмена после начала планирования требует отдельного согласованного процесса");
         }
 
         productionOrder.setStatus(StatusEnum.CANCELLED);

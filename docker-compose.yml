@@ -4,6 +4,9 @@ services:
     user: vscode
     command: sleep infinity
 
+    env_file:
+      - ./JavaBackend/production-java-backend/.env
+
     volumes:
       - .:/workspaces/project__K:cached
 
@@ -49,9 +52,6 @@ services:
 
     volumes:
       - postgres-data:/var/lib/postgresql/data
-
-      - ./database/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
-      - ./database/02-seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
