@@ -5,8 +5,7 @@ go 1.27.1
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/google/go-cmp v0.7.0
-	github.com/jackc/pgerrcode v0.0.0-20250907135507-afb5586c32a6
-	github.com/jackc/pgx/v5 v5.12.0
+	github.com/jackc/pgx/v5 v5.13.0
 	github.com/joho/godotenv v1.5.1
 )
 

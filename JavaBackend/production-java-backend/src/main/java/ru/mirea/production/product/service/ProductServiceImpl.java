@@ -57,4 +57,10 @@ public class ProductServiceImpl implements ProductService{
                 productMaterialRequirementDAO.getProductMaterialRequirementsByProductId(productId);
         return new ProductDetails(product, operations, materials);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductOperation> getProductOperations(int productId){
+        return productOperationDAO.getProductOperationByProductId(productId);
+    }
 }

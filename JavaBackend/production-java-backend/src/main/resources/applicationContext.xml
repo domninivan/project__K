@@ -83,4 +83,11 @@
 
     </bean>
 
+    <!-- RestClient для подключения к Go -->
+    <bean id="goRestClient"
+          class="org.springframework.web.client.RestClient"
+          factory-method="create">
+        <constructor-arg value="${go.base-url}"/>
+    </bean>
+
 </beans>
