@@ -1,4 +1,3 @@
-
 # ========================================
 # OS
 # ========================================
@@ -183,4 +182,10 @@ docker-compose.override.yml
 # Local configuration
 # ========================================
 *.local
->>>>>>> origin/main
+
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+/data/local/
+/data/private/
