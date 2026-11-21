@@ -1,0 +1,23 @@
+info:
+  name: AcceptPlan
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{goBaseUrl}}/api/plans/{{planId}}/accept"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test('200 ACCEPTED (или 409 если уже не PROPOSED)', () => {
+          expect([200, 409]).to.include(res.status);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

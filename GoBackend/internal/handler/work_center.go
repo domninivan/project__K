@@ -18,12 +18,13 @@ type WorkCenterService interface {
 }
 
 type WorkCenter struct {
-	svc WorkCenterService
-	log *slog.Logger
+	svc         WorkCenterService
+	scheduleSvc ScheduleService
+	log         *slog.Logger
 }
 
-func NewWorkCenter(svc WorkCenterService, log *slog.Logger) *WorkCenter {
-	return &WorkCenter{svc: svc, log: log}
+func NewWorkCenter(svc WorkCenterService, scheduleSvc ScheduleService, log *slog.Logger) *WorkCenter {
+	return &WorkCenter{svc: svc, scheduleSvc: scheduleSvc, log: log}
 }
 
 // GET /api/v1/work-centers
@@ -65,14 +66,98 @@ func (h *WorkCenter) CreateWorkCenter(c *gin.Context) {
 	c.JSON(http.StatusCreated, wc)
 }
 
+// GetSchedule — GET /api/work-centers/{id}/schedule: недельный шаблон.
 func (h *WorkCenter) GetSchedule(c *gin.Context) {
+	log := h.log.With("request_id", middleware.RequestIDFrom(c))
 
+	id, ok := pathID(c, "id")
+	if !ok {
+		return
+	}
+	resp, err := h.scheduleSvc.WorkCenterSchedule(c.Request.Context(), id)
+	if err != nil {
+		h.respondScheduleError(c, log, "get work center schedule", err)
+		return
+	}
+	c.JSON(http.StatusOK, resp)
 }
 
+// ReplaceSchedule — PUT /api/work-centers/{id}/schedule: полная замена
+// недельного шаблона (дни валидирует binding + домен в сервисе).
 func (h *WorkCenter) ReplaceSchedule(c *gin.Context) {
+	log := h.log.With("request_id", middleware.RequestIDFrom(c))
 
+	id, ok := pathID(c, "id")
+	if !ok {
+		return
+	}
+	var req model.ReplaceScheduleRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Warn("invalid request body", "err", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := h.scheduleSvc.ReplaceWorkCenterSchedule(c.Request.Context(), id, req); err != nil {
+		h.respondScheduleError(c, log, "replace work center schedule", err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"workCenterId": id, "days": req.Days})
 }
 
+// GetAvailability — GET /api/work-centers/{id}/availability?from=&to=:
+// раскрытие шаблона в конкретные даты (from/to = YYYY-MM-DD).
 func (h *WorkCenter) GetAvailability(c *gin.Context) {
+	log := h.log.With("request_id", middleware.RequestIDFrom(c))
 
+	id, ok := pathID(c, "id")
+	if !ok {
+		return
+	}
+	from, ok := queryDate(c, log, "from")
+	if !ok {
+		return
+	}
+	to, ok := queryDate(c, log, "to")
+	if !ok {
+		return
+	}
+	resp, err := h.scheduleSvc.Availability(c.Request.Context(), id, from, to)
+	if err != nil {
+		h.respondScheduleError(c, log, "get availability", err)
+		return
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+// queryDate — обязательный query-параметр даты YYYY-MM-DD; кривой -> 400.
+func queryDate(c *gin.Context, log *slog.Logger, name string) (model.Date, bool) {
+	raw := c.Query(name)
+	if raw == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "missing " + name + " query parameter (YYYY-MM-DD)"})
+		return model.Date{}, false
+	}
+	d, err := model.ParseDate(raw)
+	if err != nil {
+		log.Warn("invalid query parameter", "name", name, "value", raw, "err", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid " + name + " query parameter: " + err.Error()})
+		return model.Date{}, false
+	}
+	return d, true
+}
+
+// respondScheduleError — маппинг доменных ошибок расписаний на HTTP:
+// кривой день/период -> 400, нет станка -> 404, прочее -> 500.
+func (h *WorkCenter) respondScheduleError(c *gin.Context, log *slog.Logger, action string, err error) {
+	switch {
+	case errors.Is(err, model.ErrInvalidScheduleDay),
+		errors.Is(err, model.ErrInvalidDate):
+		log.Warn(action+" rejected", "err", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	case errors.Is(err, model.ErrNotFound):
+		log.Warn(action+" rejected", "err", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "work center not found"})
+	default:
+		log.Error(action+" failed", "err", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to process schedule"})
+	}
 }

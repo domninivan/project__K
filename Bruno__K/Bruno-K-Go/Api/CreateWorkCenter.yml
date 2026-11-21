@@ -10,12 +10,21 @@ http:
     type: json
     data: |-
       {
-        "code": "CUT-002",
-        "title": "Отрезной станок №2",
+        "code": "SMOKE-001",
+        "title": "Смоук станок №1",
         "active": true,
-        "operation_types": ["CUTTING"]
+        "operationTypes": ["CUTTING"]
       }
   auth: inherit
+
+# Повторный прогон на той же БД вернёт 409 (code UNIQUE) — это тоже валидный ответ.
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test('create work center: 201 (или 409 на повторе)', () => {
+          expect([201, 409]).to.include(res.status);
+        });
 
 settings:
   encodeUrl: true
