@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -19,6 +20,7 @@ type Config struct {
 	ServerPort string
 	LogLevel   string
 	LogFormat  string
+	Timezone   *time.Location
 }
 
 func Load() (*Config, error) {
@@ -32,6 +34,12 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("config: invalid GO_DB_PORT %q", dbPortStr)
 	}
 
+	tzName := getenv("TIME_ZONE", "Europe/Moscow")
+	tz, err := time.LoadLocation(tzName)
+	if err != nil {
+		return nil, fmt.Errorf("config: invalid GO_TZ %q: %w", tzName, err)
+	}
+
 	cfg := &Config{
 		DBHost:     os.Getenv("GO_DB_HOST"),
 		DBPort:     dbPort,
@@ -41,6 +49,7 @@ func Load() (*Config, error) {
 		ServerPort: getenv("SERVER_PORT", "8081"),
 		LogLevel:   getenv("GO_LOG_LEVEL", "INFO"),
 		LogFormat:  getenv("GO_LOG_FORMAT", "text"),
+		Timezone:   tz,
 	}
 
 	if err := cfg.validate(); err != nil {

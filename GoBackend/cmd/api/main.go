@@ -50,13 +50,20 @@ func run() error {
 
 	healthRepo := repository.NewHealth(pool)
 	workCenterRepo := repository.NewWorkCenter(pool)
+	planRepo := repository.NewPlan(pool)
+	scheduleRepo := repository.NewSchedule(pool)
 
 	healthSvc := service.NewHealth(healthRepo)
 	workCenterSvc := service.NewWorkCenter(workCenterRepo)
+	planSvc := service.NewPlan(planRepo, workCenterRepo, scheduleRepo,
+		repository.NewTxManager(pool), cfg)
+	scheduleSvc := service.NewSchedule(scheduleRepo, cfg.Timezone)
 
 	handlers := router.Handlers{
 		Health:     handler.NewHealth(healthSvc, httpLog),
-		WorkCenter: handler.NewWorkCenter(workCenterSvc, httpLog),
+		WorkCenter: handler.NewWorkCenter(workCenterSvc, scheduleSvc, httpLog),
+		Plan:       handler.NewPlan(planSvc, httpLog),
+		Schedule:   handler.NewSchedule(scheduleSvc, httpLog),
 	}
 
 	engine := router.New(handlers, httpLog)

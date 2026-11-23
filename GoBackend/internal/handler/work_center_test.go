@@ -43,7 +43,7 @@ func newTestRouter(svc *fakeWorkCenterService) *gin.Engine {
 	log := slog.New(slog.NewTextHandler(io.Discard, nil))
 	return router.New(router.Handlers{
 		Health:     handler.NewHealth(&fakeHealth{}, log),
-		WorkCenter: handler.NewWorkCenter(svc, log),
+		WorkCenter: handler.NewWorkCenter(svc, nil, log),
 	}, log)
 }
 
@@ -70,7 +70,7 @@ func TestCreateWorkCenter(t *testing.T) {
 	}{
 		{
 			name:       "created",
-			body:       `{"code":"WC-01","title":"Press","active":false,"operation_types":["OT-1","OT-2"]}`,
+			body:       `{"code":"WC-01","title":"Press","active":false,"operationTypes":["OT-1","OT-2"]}`,
 			svcResp:    &model.WorkCenter{ID: 1, Code: "WC-01", Title: "Press", Active: false, OperationTypes: []string{"OT-1", "OT-2"}},
 			want:       &model.WorkCenter{ID: 1, Code: "WC-01", Title: "Press", Active: false, OperationTypes: []string{"OT-1", "OT-2"}},
 			wantStatus: http.StatusCreated,
@@ -82,18 +82,18 @@ func TestCreateWorkCenter(t *testing.T) {
 		},
 		{
 			name:       "validation: empty code",
-			body:       `{"code":"","title":"Press","operation_types":["OT-1"]}`,
+			body:       `{"code":"","title":"Press","operationTypes":["OT-1"]}`,
 			wantStatus: http.StatusBadRequest,
 		},
 		{
 			name:       "conflict",
-			body:       `{"code":"WC-01","title":"Press","operation_types":["OT-1"]}`,
+			body:       `{"code":"WC-01","title":"Press","operationTypes":["OT-1"]}`,
 			svcErr:     fmt.Errorf("insert work_center: %w", model.ErrConflict),
 			wantStatus: http.StatusConflict,
 		},
 		{
 			name:       "internal error",
-			body:       `{"code":"WC-01","title":"Press","operation_types":["OT-1"]}`,
+			body:       `{"code":"WC-01","title":"Press","operationTypes":["OT-1"]}`,
 			svcErr:     errors.New("db down"),
 			wantStatus: http.StatusInternalServerError,
 		},
@@ -103,7 +103,7 @@ func TestCreateWorkCenter(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			svc := &fakeWorkCenterService{createResp: tc.svcResp, createErr: tc.svcErr}
-			w := doJSON(t, newTestRouter(svc), http.MethodPost, "/api/v1/work-centers", tc.body, nil)
+			w := doJSON(t, newTestRouter(svc), http.MethodPost, "/api/work-centers", tc.body, nil)
 
 			if w.Code != tc.wantStatus {
 				t.Fatalf("status = %d, want %d (body: %s)", w.Code, tc.wantStatus, w.Body)
@@ -162,7 +162,7 @@ func TestListWorkCenters(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			svc := &fakeWorkCenterService{listResp: tc.svcResp, listErr: tc.svcErr}
-			w := doJSON(t, newTestRouter(svc), http.MethodGet, "/api/v1/work-centers", "", nil)
+			w := doJSON(t, newTestRouter(svc), http.MethodGet, "/api/work-centers", "", nil)
 			if w.Code != tc.wantStatus {
 				t.Fatalf("status = %d, want %d (body: %s)", w.Code, tc.wantStatus, w.Body)
 			}
@@ -195,7 +195,7 @@ func TestRequestIDEcho(t *testing.T) {
 	t.Parallel()
 
 	svc := &fakeWorkCenterService{listResp: []model.WorkCenter{}}
-	w := doJSON(t, newTestRouter(svc), http.MethodGet, "/api/v1/work-centers", "", map[string]string{
+	w := doJSON(t, newTestRouter(svc), http.MethodGet, "/api/work-centers", "", map[string]string{
 		"X-Request-Id": "test-id-123",
 	})
 

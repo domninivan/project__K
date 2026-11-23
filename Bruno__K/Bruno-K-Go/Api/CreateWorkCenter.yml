@@ -5,17 +5,25 @@ info:
 
 http:
   method: POST
-  url: "{{goBaseUrl}}/api/v1/work-centers"
+  url: "{{goBaseUrl}}/api/work-centers"
   body:
     type: json
     data: |-
       {
-        "code": "CUT-002",
-        "title": "Отрезной станок №2",
+        "code": "SMOKE-001",
+        "title": "Смоук станок №1",
         "active": true,
-        "operation_types": ["CUTTING"]
+        "operationTypes": ["CUTTING"]
       }
   auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test('create work center: 201 (или 409 на повторе)', () => {
+          expect([201, 409]).to.include(res.status);
+        });
 
 settings:
   encodeUrl: true
