@@ -1,0 +1,58 @@
+info:
+  name: CreatePlan
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{goBaseUrl}}/api/plans"
+  body:
+    type: json
+    data: |-
+      {
+        "orderId": 91001,
+        "earliestStartAt": "2027-01-11T09:00:00+03:00",
+        "dueDate": "2027-01-31",
+        "priority": "HIGH",
+        "items": [
+          {
+            "orderItemId": 91002,
+            "productId": 42,
+            "quantity": 3,
+            "operations": [
+              {
+                "operationId": 1,
+                "sequenceNumber": 1,
+                "operationType": "CUTTING",
+                "timePerUnitSeconds": 600
+              }
+            ]
+          }
+        ]
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.body && res.body.planId) {
+          bru.setVar('planId', res.body.planId);
+        }
+    - type: tests
+      code: |-
+        test('201 created (или 409 conflict на повторе)', () => {
+          expect([201, 409]).to.include(res.status);
+        });
+        test('onTime true при 201', () => {
+          if (res.status === 201) {
+            expect(res.body.status).to.equal('PROPOSED');
+            expect(res.body.onTime).to.equal(true);
+          }
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

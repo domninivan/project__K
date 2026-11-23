@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -89,7 +90,7 @@ func (r *WorkCenter) Create(ctx context.Context, req model.CreateWorkCenterReque
 
 func mapPgError(err error, op string) error {
 	var pgErr *pgconn.PgError
-	if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+	if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.UniqueViolation { //"23505"
 		return fmt.Errorf("%w: %s", model.ErrConflict, pgErr.ConstraintName)
 	}
 	return fmt.Errorf("%s: %w", op, err)

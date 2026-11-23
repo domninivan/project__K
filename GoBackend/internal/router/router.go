@@ -10,6 +10,8 @@ import (
 
 type Handlers struct {
 	WorkCenter *handler.WorkCenter
+	Plan       *handler.Plan
+	Schedule   *handler.Schedule
 	Health     *handler.Health
 }
 
@@ -17,14 +19,24 @@ func New(h Handlers, logger *slog.Logger) *gin.Engine {
 	r := gin.New()
 	r.Use(middleware.Logging(logger), middleware.Recovery(logger))
 
-	v1 := r.Group("/api/v1")
+	api := r.Group("/api")
 
-	v1.GET("/live", h.Health.Live)
-	v1.GET("/ready", h.Health.Ready)
+	api.GET("/live", h.Health.Live)
+	api.GET("/ready", h.Health.Ready)
 
-	v1.GET("/work-centers", h.WorkCenter.ListWorkCenters)
+	api.GET("/work-centers", h.WorkCenter.ListWorkCenters)
+	api.POST("/work-centers", h.WorkCenter.CreateWorkCenter)
+	api.GET("/work-centers/:id/schedule", h.WorkCenter.GetSchedule)
+	api.PUT("/work-centers/:id/schedule", h.WorkCenter.ReplaceSchedule)
+	api.GET("/work-centers/:id/availability", h.WorkCenter.GetAvailability)
 
-	v1.POST("/work-centers", h.WorkCenter.CreateWorkCenter)
+	api.POST("/plans", h.Plan.CreatePlan)
+	api.GET("/plans/orders/:orderId", h.Plan.GetOrderPlan)
+	api.POST("/plans/:planId/accept", h.Plan.AcceptPlan)
+	api.POST("/plans/:planId/reject", h.Plan.RejectPlan)
+	api.POST("/plans/orders/:orderId/cancel", h.Plan.CancelOrderPlan)
+
+	api.GET("/schedule", h.Schedule.GetSchedule)
 
 	return r
 }
