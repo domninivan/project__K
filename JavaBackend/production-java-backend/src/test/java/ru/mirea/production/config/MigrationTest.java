@@ -18,7 +18,7 @@ class MigrationTest {
     void emptyDatabaseMigratesAndEnforcesRoles() throws Exception {
         inSchema((connection, schema) -> {
             Flyway flyway = flyway(schema, false);
-            assertEquals(4, flyway.migrate().migrationsExecuted);
+            assertEquals(5, flyway.migrate().migrationsExecuted);
             assertEquals(0, flyway.migrate().migrationsExecuted);
             try (var statement = connection.createStatement()) {
                 try (var result = statement.executeQuery("SELECT count(*) FROM product")) {
@@ -62,7 +62,7 @@ class MigrationTest {
             }
             assertThrows(org.flywaydb.core.api.FlywayException.class,
                     () -> flyway(schema, false).migrate());
-            assertEquals(3, flyway(schema, true).migrate().migrationsExecuted);
+            assertEquals(4, flyway(schema, true).migrate().migrationsExecuted);
             try (var statement = connection.createStatement();
                  var result = statement.executeQuery("SELECT comment, client_id FROM production_order WHERE comment = 'preserve-me'")) {
                 assertTrue(result.next());
@@ -90,7 +90,7 @@ class MigrationTest {
                 statement.execute(new String(input.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8));
                 statement.executeUpdate("UPDATE product SET description = 'keep-existing-description'");
             }
-            assertEquals(1, flyway(schema, false).migrate().migrationsExecuted);
+            assertEquals(2, flyway(schema, false).migrate().migrationsExecuted);
             assertEquals(0, flyway(schema, false).migrate().migrationsExecuted);
             String[] tables = {"product", "product_operation", "product_material_requirement",
                     "production_order", "production_order_item"};
