@@ -105,10 +105,13 @@
     </bean>
 
     <!-- RestClient для подключения к Go -->
-    <bean id="goRestClient"
-          class="org.springframework.web.client.RestClient"
-          factory-method="create">
+    <bean id="goRestClientBuilder"
+          class="ru.mirea.production.planning.client.GoRestClientFactory"
+          factory-method="builder">
         <constructor-arg value="${go.base-url}"/>
+        <constructor-arg ref="jacksonObjectMapper"/>
     </bean>
+
+    <bean id="goRestClient" factory-bean="goRestClientBuilder" factory-method="build"/>
 
 </beans>

@@ -35,7 +35,40 @@ Go-миграции выполняются в отдельной `go_db`. Java-�
 
 Общий `app-start.sh` автоматически выбирает baseline только для проверенной исходной V1 без истории Flyway. Пустая БД и БД с историей запускаются без baseline. При несовпадении структуры скрипт останавливается до запуска сервисов. Удалять Docker-том для перехода не требуется.
 
-### Снимок технологического маршрута
+### Методы Java–Go
+
+Java обращается к Go через GoPlanningClient; клиент и JSON-сериализатор подключены
+в applicationContext.xml. Даты передаются как YYYY-MM-DD, моменты — RFC3339.
+Адрес задаётся GO_BASE_URL (по умолчанию http://localhost:8081, когда оба процесса
+работают в app). Все методы Java ниже требуют JWT с ролью PLANNER.
+
+| Java | Go |
+| --- | --- |
+| POST /api/planner/orders/{orderId} | POST /api/plans |
+| GET /api/planner/orders/{orderId} | GET /api/plans/orders/{orderId} |
+| GET /api/planner/work-centers | GET /api/work-centers |
+| GET /api/planner/work-centers/{id}/availability?from=YYYY-MM-DD&to=YYYY-MM-DD | GET /api/work-centers/{id}/availability |
+| GET /api/planner/schedule?from=RFC3339&to=RFC3339 | GET /api/schedule |
+| POST /api/planner/plans/{planId}/accept | POST /api/plans/{planId}/accept |
+| POST /api/planner/plans/{planId}/reject | POST /api/plans/{planId}/reject |
+| POST /api/planner/orders/{orderId}/cancel-plan | POST /api/plans/orders/{orderId}/cancel |
+
+from/to доступности — даты, текущий Go включает обе границы. В запросах расписания
+символ + в смещении времени должен кодироваться как %2B; Java-клиент делает это
+через URI-переменные. Ответ плана содержит dueDate и прогнозируемые даты.
+Ошибки Go 400/404/409 преобразуются в соответствующие HTTP-ошибки Java.
+Эти методы обеспечивают обмен с текущим Go; согласование клиентом, журнал команд,
+восстановление неизвестного результата и бизнес-переходы заказа после accept/cancel
+требуют следующих блоков. Статус плана Go не является статусом заказа Java.
+
+Сквозная проверка: JavaGoIntegrationTest запускается только с JAVA_GO_TEST_URL,
+например http://localhost:18081, и JAVA_MIGRATION_TEST_URL/USER/PASSWORD для
+изолированной Java-БД. Нужен настоящий GoBackend с отдельной БД, применёнными
+миграциями и календарём станков. Использовать рабочие сервисы нельзя: тест
+создаёт пользователей, заказы, планы и меняет статусы планов. Обычный mvnw test
+без JAVA_GO_TEST_URL пропускает только этот сквозной сценарий.
+
+### Фиксация маршрута
 
 Создание заказа сохраняет текущий контракт: dueDate — обязательная желаемая дата,
 новый заказ получает MEDIUM. В этом блоке дата не является подтверждением согласования.
