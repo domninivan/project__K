@@ -1,5 +1,6 @@
 import { createContext, useContext, useRef, useState } from "react";
 import { orders as initialOrders, products } from "../mocks/mockData";
+import { createMockPlan, getPlanningActions, updatePlanning } from "../mocks/orderPlanning";
 
 const OrdersContext = createContext(null);
 
@@ -18,14 +19,34 @@ export function OrdersProvider({ children }) {
         productTitle: product.title, quantity: item.quantity };
     });
     const order = {
-      id: nextOrderId.current++, dueDate: payload.dueDate, comment: payload.comment,
+      id: nextOrderId.current++, agreedDate: null, comment: payload.comment,
       status: "NEW", priority: "MEDIUM", createdAt: new Date().toISOString(), items,
     };
     setOrders((previous) => [order, ...previous]);
     return order;
   }
 
-  return <OrdersContext.Provider value={{ orders, createOrder }}>{children}</OrdersContext.Provider>;
+  function changePlanning(orderId, action, data = {}) {
+    setOrders((previous) => previous.map((order) => {
+      if (order.id !== orderId) return order;
+      return updatePlanning(order, action, data);
+    }));
+  }
+
+  async function calculatePlan(orderId) {
+    const order = orders.find((item) => item.id === orderId);
+    if (!order || !getPlanningActions(order).calculate) {
+      throw new Error("Расчёт сейчас недоступен. Откройте карточку заказа.");
+    }
+    if (!order.items.length) throw new Error("В заказе нет изделий для расчёта.");
+    changePlanning(orderId, "calculate", { plan: createMockPlan(order) });
+  }
+
+  return (
+    <OrdersContext.Provider value={{ orders, createOrder, changePlanning, calculatePlan }}>
+      {children}
+    </OrdersContext.Provider>
+  );
 }
 
 export function useOrders() {

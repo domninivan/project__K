@@ -24,7 +24,7 @@ export const products = [
 export const orders = [
   {
     id: 1,
-    dueDate: "2026-11-20",
+    agreedDate: null,
     comment: "Срочно для сборки редуктора",
     priority: "HIGH",
     status: "NEW",
@@ -37,7 +37,7 @@ export const orders = [
   },
   {
     id: 2,
-    dueDate: "2026-12-05",
+    agreedDate: null,
     comment: "",
     priority: "MEDIUM",
     status: "PLANNED",

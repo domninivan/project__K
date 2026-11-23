@@ -3,7 +3,6 @@ import { useState } from "react";
 function OrderForm({ products, onSubmit, onCancel, isSubmitting = false, submitError = null }) {
   const [selectedId, setSelectedId] = useState("");
   const [items, setItems] = useState([]);
-  const [dueDate, setDueDate] = useState("");
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -33,15 +32,6 @@ function OrderForm({ products, onSubmit, onCancel, isSubmitting = false, submitE
         result["quantity-" + item.productId] = "Введите целое число больше 0";
       }
     }
-    const now = new Date();
-    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    const parsed = new Date(dueDate + "T00:00:00");
-    const [year, month, day] = dueDate.split("-").map(Number);
-    if (!dueDate) result.dueDate = "Укажите желаемую дату";
-    else if (!/^\d{4}-\d{2}-\d{2}$/.test(dueDate) ||
-      parsed.getFullYear() !== year || parsed.getMonth() + 1 !== month || parsed.getDate() !== day) {
-      result.dueDate = "Укажите корректную дату";
-    } else if (dueDate < today) result.dueDate = "Дата не может быть раньше сегодняшней";
     if (comment.length > 200) result.comment = "Комментарий не должен быть длиннее 200 символов";
     return result;
   }
@@ -52,7 +42,7 @@ function OrderForm({ products, onSubmit, onCancel, isSubmitting = false, submitE
     const nextErrors = validate();
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
-    onSubmit({ dueDate, comment, items: items.map((item) => ({
+    onSubmit({ comment, items: items.map((item) => ({
       productId: products.find((p) => p.id === item.productId).id,
       quantity: Number(item.quantity),
     })) });
@@ -96,10 +86,6 @@ function OrderForm({ products, onSubmit, onCancel, isSubmitting = false, submitE
         </div>
         {errors.items && <p className="error" role="alert">{errors.items}</p>}
         <div className="form-fields">
-          <label>Желаемая дата
-            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} aria-invalid={Boolean(errors.dueDate)} aria-describedby={errors.dueDate ? "date-error" : undefined} />
-            {errors.dueDate && <span id="date-error" className="error" role="alert">{errors.dueDate}</span>}
-          </label>
           <label className="comment-field">Комментарий
             <textarea rows="2" value={comment} onChange={(e) => setComment(e.target.value)} aria-invalid={Boolean(errors.comment)} aria-describedby={errors.comment ? "comment-error" : undefined} />
             <span className="field-hint">{comment.length} / 200</span>

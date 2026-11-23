@@ -1,14 +1,6 @@
 import { Link } from "react-router-dom";
 import { useOrders } from "../context/OrdersContext";
-
-const statusNames = {
-  NEW: "Новый",
-  READY_FOR_PLANNING: "Готов к планированию",
-  PLANNED: "Запланирован",
-  IN_PRODUCTION: "В производстве",
-  COMPLETED: "Выполнен",
-  CANCELLED: "Отменён",
-};
+import { getOrderStatus, formatAgreedDate } from "../utils/orderDisplay";
 
 const priorityNames = {
   HIGH: "Высокий",
@@ -16,18 +8,13 @@ const priorityNames = {
   LOW: "Низкий",
 };
 
-function formatDate(date) {
-  const [year, month, day] = date.split("-");
-  return `${day}.${month}.${year}`;
-}
-
 function OrdersPage() {
   const { orders } = useOrders();
   return (
     <div>
       <div className="page-header">
         <div>
-          <h2>Заказы</h2>
+          <h2>Мои заказы</h2>
           <p>Всего заказов: {orders.length}</p>
         </div>
         <Link to="/orders/new" className="button-link">
@@ -41,9 +28,10 @@ function OrdersPage() {
             <tr>
               <th>Номер</th>
               <th>Состав заказа</th>
-              <th>Желаемая дата</th>
+              <th>Согласованная дата</th>
               <th>Статус</th>
               <th>Приоритет</th>
+              <th>Действия</th>
             </tr>
           </thead>
           <tbody>
@@ -57,12 +45,12 @@ function OrdersPage() {
                     </div>
                   ))}
                 </td>
-                <td>{formatDate(order.dueDate)}</td>
+                <td>{formatAgreedDate(order.agreedDate)}</td>
                 <td>
                   <span
                     className={"badge status-" + order.status.toLowerCase()}
                   >
-                    {statusNames[order.status]}
+                    {getOrderStatus(order)}
                   </span>
                 </td>
                 <td>
@@ -72,6 +60,7 @@ function OrdersPage() {
                     {priorityNames[order.priority]}
                   </span>
                 </td>
+                <td><Link to={`/orders/${order.id}`}>Открыть</Link></td>
               </tr>
             ))}
           </tbody>

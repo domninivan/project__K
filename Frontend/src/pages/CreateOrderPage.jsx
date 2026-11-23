@@ -17,8 +17,8 @@ function CreateOrderPage() {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      await createOrder(payload);
-      navigate("/orders", { replace: true });
+      const order = await createOrder(payload);
+      navigate(`/orders/${order.id}`, { replace: true });
     } catch {
       setSubmitError("Не удалось создать заказ. Попробуйте ещё раз.");
     } finally {
