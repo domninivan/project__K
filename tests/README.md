@@ -18,7 +18,13 @@ npm run build
 Pop-Location
 ```
 
-Go содержит unit-тесты config, model, service, handler и middleware. Java подключает тестовый starter, но файлов тестов в ветке нет: успешный Maven test не доказывает покрытие сценариев. Frontend `npm test` печатает `No tests configured yet`; это заглушка. Сборка Vite проверяет сборку, а не поведение UI.
+Go содержит unit-тесты config, model, service, handler и middleware. Java содержит проверки XML, JWT, регистрации, ролей, доступа к заказам и миграций. PostgreSQL-тесты запускаются только при заданной JAVA_MIGRATION_TEST_URL; также задайте JAVA_MIGRATION_TEST_USER и JAVA_MIGRATION_TEST_PASSWORD для отдельной тестовой БД. Они создают тестовые данные: рабочую БД использовать нельзя. Без URL эти проверки пропускаются, поэтому успешный Maven test сам по себе не доказывает проверку сценариев с БД. Frontend `npm test` печатает `No tests configured yet`; это заглушка. Сборка Vite проверяет сборку, а не поведение UI.
+
+Дополнительные проверки Bash: `bash tests/init-java-env.sh` (временные файлы .env)
+и `bash tests/java-baseline-check.sh` (отдельный PostgreSQL с CREATEDB; переменные
+BASELINE_TEST_ADMIN_URL, DB_USERNAME, DB_PASSWORD). Эти скрипты запускаются из корня
+в Linux/Dev Container. Для проверки init используется одноразовый Docker-контейнер,
+как описано в `docs/15-local-development.md`.
 
 ## Ручные и приёмочные проверки
 
