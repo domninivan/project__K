@@ -1,7 +1,7 @@
 -- =========================================================
 -- Case 22: Production planning
 -- Java backend demo / seed data
--- File: 02-seed.sql
+-- Flyway V4: preserve the original demo dataset without duplicating existing rows.
 -- =========================================================
 
 -- =========================================================

@@ -1,0 +1,25 @@
+info:
+  name: GetAvailability
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{goBaseUrl}}/api/work-centers/1/availability?from=2027-01-11&to=2027-01-17"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test('200 рабочие интервалы на неделю', () => {
+          expect(res.status).to.equal(200);
+          expect(res.body.intervals).to.be.an('array').with.length.at.least(1);
+          expect(res.body.intervals[0].startAt).to.contain('+03:00');
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

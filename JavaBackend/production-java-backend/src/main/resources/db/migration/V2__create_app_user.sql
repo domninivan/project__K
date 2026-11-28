@@ -1,0 +1,11 @@
+CREATE TABLE app_user (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    full_name VARCHAR(200) NOT NULL,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(30) NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT app_user_role_check CHECK (
+        role IN ('CLIENT', 'PLANNER', 'SHOP_MANAGER', 'WORKER', 'REPORTING')
+    )
+);
