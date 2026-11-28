@@ -1,3 +1,4 @@
+import { isApi } from "../config/dataMode";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useOrders } from "../context/OrdersContext";
@@ -20,7 +21,7 @@ export default function PlannerOrderPage() {
   const { plan, proposal } = order;
   const history = order.planHistory ?? [];
   const selectedPlan = history.find((item) => String(item.version) === historyVersion) ?? plan;
-  const actions = getPlanningActions(order);
+  const actions = isApi ? {} : getPlanningActions(order);
   async function calculate() {
     setError("");
     setCalculating(true);
@@ -57,6 +58,7 @@ export default function PlannerOrderPage() {
       </section>
       <section className="card order-details planning-panel">
         <h3>Производственный план</h3>
+        {isApi && <p>Согласование плана доступно в демонстрационном режиме.</p>}
         {!plan && <p>План ещё не рассчитан.</p>}
         {selectedPlan && (
           <>

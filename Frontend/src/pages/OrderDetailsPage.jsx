@@ -37,13 +37,13 @@ function DateProposal({ order, onRespond }) {
 
 function OrderDetailsPage() {
   const { orderId } = useParams();
-  const { orders, changePlanning } = useOrders();
+  const { orders, loading, error, changePlanning } = useOrders();
   const order = orders.find((item) => String(item.id) === orderId);
 
   return (
     <div className="order-page">
       <Link to="/orders" className="back-link">← Назад к заказам</Link>
-      {!order ? (
+      {loading ? <p>Загрузка заказа…</p> : error ? <p className="error" role="alert">{error}</p> : !order ? (
         <h2>Заказ не найден</h2>
       ) : (
         <>

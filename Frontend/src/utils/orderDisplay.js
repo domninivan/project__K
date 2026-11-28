@@ -1,6 +1,7 @@
 const statusNames = {
   NEW: "Новый",
   READY_FOR_PLANNING: "Готов к планированию",
+  PLAN_PROPOSED: "План предложен",
   PLANNED: "Запланирован",
   IN_PRODUCTION: "В производстве",
   COMPLETED: "Выполнен",
