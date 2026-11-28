@@ -137,6 +137,10 @@ echo "========================================"
 
 echo "[OK] Окружение проверено."
 
+# Read-only preflight before starting any service. Never blindly baseline a nonempty DB.
+JAVA_BASELINE="$(bash "$ROOT_DIR/Scripts/java-baseline-check.sh")" \
+    || fail "Не пройдена проверка Java-БД перед запуском."
+
 echo
 echo "========================================"
 echo "Запуск сервисов"
@@ -149,7 +153,7 @@ GO_PID="${PIDS[-1]}"
 # Java Backend.
 start_service "Java Backend" \
     "$ROOT_DIR/JavaBackend/production-java-backend" \
-    ./mvnw spring-boot:run
+    env JAVA_DB_BASELINE_ON_MIGRATE="$JAVA_BASELINE" ./mvnw spring-boot:run
 JAVA_PID="${PIDS[-1]}"
 
 # Frontend.

@@ -14,6 +14,22 @@ public class ProductionOrderDAOImpl implements ProductionOrderDAO{
     private SessionFactory sessionFactory;
 
     @Override
+    public List<ProductionOrder> getOrdersByClientId(Long clientId) {
+        return sessionFactory.getCurrentSession().createQuery(
+                "select distinct po from ProductionOrder po inner join fetch po.items i "
+                        + "inner join fetch i.product where po.clientId = :clientId", ProductionOrder.class)
+                .setParameter("clientId", clientId).getResultList();
+    }
+
+    @Override
+    public ProductionOrder getOrderByIdAndClientId(int id, Long clientId) {
+        return sessionFactory.getCurrentSession().createQuery(
+                "select distinct po from ProductionOrder po inner join fetch po.items i "
+                        + "inner join fetch i.product where po.id = :id and po.clientId = :clientId",
+                ProductionOrder.class).setParameter("id", id).setParameter("clientId", clientId).uniqueResult();
+    }
+
+    @Override
     public List<ProductionOrder> getAllOrders() {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery(
