@@ -211,6 +211,31 @@ button:hover,
   color: #166534;
 }
 
+.status-ready_for_planning {
+  background-color: #e6e1fb;
+  color: #5b3db3;
+}
+
+.status-plan_proposed {
+  background-color: #ece1f6;
+  color: #6d28d9;
+}
+
+.status-in_production {
+  background-color: #fde8d1;
+  color: #9a4d00;
+}
+
+.status-completed {
+  background-color: #d5f1f5;
+  color: #0e7490;
+}
+
+.status-cancelled {
+  background-color: #fde2e2;
+  color: #991b1b;
+}
+
 .priority-high {
   background-color: #fde2e2;
   color: #991b1b;
