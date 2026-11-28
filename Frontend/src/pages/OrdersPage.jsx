@@ -1,18 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { getOrderStatus, formatAgreedDate } from "../utils/orderDisplay";
 import { useOrders } from "../context/OrdersContext";
 import { isApi, isMock } from "../config/dataMode";
-import { getOrders, cancelOrder } from "../api/ordersApi";
-
-const statusNames = {
-  NEW: "Новый",
-  READY_FOR_PLANNING: "Готов к планированию",
-  PLAN_PROPOSED: "План предложен",
-  PLANNED: "Запланирован",
-  IN_PRODUCTION: "В производстве",
-  COMPLETED: "Выполнен",
-  CANCELLED: "Отменён",
-};
+import { cancelOrder } from "../api/ordersApi";
 
 const priorityNames = {
   HIGH: "Высокий",
@@ -28,33 +19,12 @@ function formatDate(date) {
 
 function OrdersPage() {
   const location = useLocation();
-  const { orders: mockOrders } = useOrders();
+  const { orders, setOrders, loading, error, loadOrders } = useOrders();
 
-  const [orders, setOrders] = useState(isApi ? [] : mockOrders);
-  const [loading, setLoading] = useState(isApi);
-  const [error, setError] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
   const [cancelError, setCancelError] = useState(null);
 
   const createdOrderId = location.state?.createdOrderId;
-
-  async function loadOrders() {
-    setLoading(true);
-    setError(null);
-    try {
-      setOrders(await getOrders());
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    if (isApi) {
-      loadOrders();
-    }
-  }, []);
 
   async function handleCancel(order) {
     if (!window.confirm(`Отменить заказ № ${order.id}?`)) return;
@@ -78,7 +48,7 @@ function OrdersPage() {
     <div>
       <div className="page-header">
         <div>
-          <h2>Заказы</h2>
+          <h2>Мои заказы</h2>
           <p>Всего заказов: {orders.length}</p>
         </div>
         <Link to="/orders/new" className="button-link">
@@ -117,6 +87,7 @@ function OrdersPage() {
                 <th>Номер</th>
                 <th>Состав заказа</th>
                 <th>Желаемая дата</th>
+                <th>Согласованная дата</th>
                 <th>Статус</th>
                 <th>Приоритет</th>
                 <th></th>
@@ -134,11 +105,12 @@ function OrdersPage() {
                     ))}
                   </td>
                   <td>{formatDate(order.dueDate)}</td>
+                  <td>{formatAgreedDate(order.agreedDate)}</td>
                   <td>
                     <span
                       className={"badge status-" + order.status.toLowerCase()}
                     >
-                      {statusNames[order.status]}
+                      {getOrderStatus(order)}
                     </span>
                   </td>
                   <td>
@@ -149,6 +121,7 @@ function OrdersPage() {
                     </span>
                   </td>
                   <td>
+                    <Link to={`/orders/${order.id}`}>Открыть</Link>{" "}
                     <button
                       type="button"
                       className="delete-btn"

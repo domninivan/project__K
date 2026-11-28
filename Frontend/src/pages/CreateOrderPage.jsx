@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { products as mockProducts } from "../mocks/mockData";
-import { isApi, isMock } from "../config/dataMode";
+import { isApi } from "../config/dataMode";
 import { getProducts } from "../api/productsApi";
-import { createOrder } from "../api/ordersApi";
+import { useOrders } from "../context/OrdersContext";
 import OrderForm from "../components/orders/OrderForm";
 
 function CreateOrderPage() {
   const navigate = useNavigate();
+  const { createOrder } = useOrders();
 
   const [products, setProducts] = useState(isApi ? [] : mockProducts);
   const [loading, setLoading] = useState(isApi);
@@ -38,18 +39,12 @@ function CreateOrderPage() {
   async function handleSubmit(payload) {
     if (submitting.current) return;
 
-    // Демонстрационный режим: сохранение недоступно, запросы не выполняются.
-    if (isMock) {
-      setSubmitError("Демонстрационный режим: сохранение недоступно");
-      return;
-    }
-
     submitting.current = true;
     setIsSubmitting(true);
     setSubmitError(null);
     try {
       const created = await createOrder(payload);
-      navigate("/orders", { state: { createdOrderId: created.id } });
+      navigate(`/orders/${created.id}`, { replace: true });
     } catch (err) {
       setSubmitError(err.message);
     } finally {
