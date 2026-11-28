@@ -21,7 +21,7 @@ class FlywayXmlTest {
 
             // Verify XML wiring without running migrations or connecting to PostgreSQL.
             context.getBeanDefinition("javaFlyway").setInitMethodName(null);
-            for (String bean : new String[]{"sessionFactory", "transactionManager", "goRestClient", "dataSource"}) {
+            for (String bean : new String[]{"sessionFactory", "transactionManager", "goRestClient", "goRestClientBuilder", "dataSource"}) {
                 context.removeBeanDefinition(bean);
             }
             DataSource dataSource = new DriverManagerDataSource();

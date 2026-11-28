@@ -72,9 +72,11 @@ public class GoPlanningClientImpl implements GoPlanningClient {
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/schedule")
-                        .queryParam("from", from)
-                        .queryParam("to", to)
-                        .build())
+                        .queryParam("from", "{from}")
+                        .queryParam("to", "{to}")
+                        .build(java.util.Map.of(
+                                "from", from.format(java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                                "to", to.format(java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME))))
                 .retrieve()
                 .body(ProductionScheduleResponse.class);
     }

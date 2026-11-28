@@ -7,7 +7,7 @@ import ru.mirea.production.order.entity.ProductionOrderItem;
 import ru.mirea.production.planning.dto.request.PlanningItemRequest;
 import ru.mirea.production.planning.dto.request.PlanningOperationRequest;
 import ru.mirea.production.planning.dto.request.PlanningRequest;
-import ru.mirea.production.product.entity.ProductOperation;
+import ru.mirea.production.order.entity.OrderItemOperation;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -21,12 +21,12 @@ public interface PlanningMapper {
     @Mapping(source = "operations", target = "operations")
     PlanningItemRequest toPlanningItemRequest(
             ProductionOrderItem item,
-            List<ProductOperation> operations
+            List<OrderItemOperation> operations
     );
 
-    @Mapping(source = "id", target = "operationId")
+    @Mapping(source = "sourceOperationId", target = "operationId")
     PlanningOperationRequest toPlanningOperationRequest(
-            ProductOperation operation
+            OrderItemOperation operation
     );
 
     @Mapping(source = "order.id", target = "orderId")
