@@ -5,8 +5,19 @@ info:
 
 http:
   method: GET
-  url: "{{goBaseUrl}}/api/v1/work-centers"
+  url: "{{goBaseUrl}}/api/work-centers"
   auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test('200 OK', () => expect(res.status).to.equal(200));
+        test('JSON array with active work centers', () => {
+          expect(res.body).to.be.an('array');
+          expect(res.body.length).to.be.at.least(1);
+          expect(res.body[0]).to.have.property('code');
+        });
 
 settings:
   encodeUrl: true

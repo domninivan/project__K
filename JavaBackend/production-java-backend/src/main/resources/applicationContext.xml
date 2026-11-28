@@ -39,8 +39,29 @@
     </bean>
 
 
+    <!-- Миграции на том же DataSource, до проверки схемы Hibernate -->
+    <bean id="javaFlyway"
+          class="org.flywaydb.core.Flyway"
+          init-method="migrate">
+        <constructor-arg>
+            <bean class="org.flywaydb.core.api.configuration.ClassicConfiguration">
+                <property name="dataSource" ref="dataSource"/>
+                <property name="locationsAsStrings">
+                    <list>
+                        <value>classpath:db/migration</value>
+                    </list>
+                </property>
+                <property name="defaultSchema" value="public"/>
+                <property name="baselineVersionAsString" value="1"/>
+                <property name="baselineOnMigrate" value="${JAVA_DB_BASELINE_ON_MIGRATE:false}"/>
+                <property name="cleanDisabled" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
     <!-- Hibernate SessionFactory -->
     <bean id="sessionFactory"
+          depends-on="javaFlyway"
           class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 
         <property name="dataSource"
